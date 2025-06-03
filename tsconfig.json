@@ -4,6 +4,8 @@
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
+    "esModuleInterop": true,
+    "types": ["node", "jest"],
     "baseUrl": ".",
     "paths": {
       "@shared/*": ["shared/src/*"]
