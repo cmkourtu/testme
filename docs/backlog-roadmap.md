@@ -25,8 +25,8 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | ID  | Title                 | Description                                                             | AC                                           |
 |-----|-----------------------|-------------------------------------------------------------------------|----------------------------------------------|
 | 2-1 | Express boilerplate   | `server/src/index.ts`, env loader, health route.                         | `GET /health` returns 200.                   |
-| 2-2 | Upload endpoint       | `POST /api/upload` (multipart) saves PDF to `tmp/`, returns `upload_id`. | `curl` upload returns 201 + id.              |
-| 2-3 | Text extractor service| Use `pdf-parse` to return plain text chunks ≤ 800 tokens.               | Jest: sample PDF returns array of chunks.    |
+| 2-2 | Upload endpoint       | `POST /api/upload` accepts raw text JSON and saves to `tmp/` as `.txt`, returns `upload_id`. | `curl` upload returns 201 + id. |
+| 2-3 | Text chunker service| Split text into chunks ≤ **CHUNK_SIZE** (default 30k chars). | Jest: sample text returns array of chunks. |
 | 2-4 | Objective extractor route | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.   | For sample text returns ≥5 objectives.       |
 | 2-5 | CRUD objective/item   | REST routes `/objectives`, `/items` (GET/PUT/DELETE) for admin UI.      | Swagger doc passes.                           |
 | 2-6 | Session “next” route  | `/api/session/next` → scheduler pick logic.                             | Unit test returns item with correct tier.    |
