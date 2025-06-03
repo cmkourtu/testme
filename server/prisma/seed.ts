@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
 
 async function main() {
-  const user = await db.user.upsert({
+  await db.user.upsert({
     where: { uuid: 'demo-uuid' },
     create: { uuid: 'demo-uuid' },
     update: {}
