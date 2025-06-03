@@ -1,6 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Bottleneck from 'bottleneck';
-import { Env } from '../env';
 
 const limiter = new Bottleneck({ maxConcurrent: 2, minTime: 200 });
 
@@ -13,14 +12,22 @@ const ds = axios.create({
   timeout: 15000
 });
 
-export async function deepSeekChat(body: unknown) {
-  return limiter.schedule(() =>
-    ds
-      .post('/chat/completions', body)
-      .then((r) => r.data)
-      .catch((e) => {
-        console.error('DeepSeek error', e.response?.data ?? e.message);
+export async function deepSeekChat<T = unknown>(
+  body: unknown,
+  retries = 1
+): Promise<T> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await limiter.schedule(() =>
+        ds.post<T>('/chat/completions', body).then((r) => r.data)
+      );
+    } catch (e) {
+      const err = e as AxiosError;
+      console.error('DeepSeek error', err.response?.data ?? err.message);
+      if (attempt === retries) {
         throw e;
-      })
-  );
+      }
+    }
+  }
+  throw new Error('unreachable');
 }
