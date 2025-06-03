@@ -1,0 +1,7 @@
+node_modules
+dist
+pnpm-lock.yaml
+coverage
+.turbo
+.DS_Store
+# Add other files/folders to ignore for Prettier
