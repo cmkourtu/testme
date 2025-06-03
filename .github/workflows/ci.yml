@@ -11,8 +11,12 @@ jobs:
         with:
           node-version: 20
           cache: pnpm
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run-install: false
       - name: Install
-        run: corepack enable && pnpm i
+        run: pnpm install
       - name: Lint
         run: pnpm lint
       - name: Test
