@@ -1,0 +1,58 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  uuid    String   @unique
+  reviews Review[]
+}
+
+model Item {
+  id          Int       @id @default(autoincrement())
+  objectiveId Int
+  tier        Int
+  stem        String
+  reference   Json
+  Objective   Objective @relation(fields: [objectiveId], references: [id])
+}
+
+model Review {
+  id      Int   @id @default(autoincrement())
+  userId  Int
+  itemId  Int
+  ts      DateTime @default(now())
+  verdict String
+  score   Float
+  Item    Item @relation(fields: [itemId], references: [id])
+  User    User @relation(fields: [userId], references: [id])
+}
+
+model ObjectiveState {
+  id          Int  @id @default(autoincrement())
+  userId      Int
+  objectiveId Int
+  p_mastery   Float
+  mastered    Boolean @default(false)
+}
+
+model ClusterState {
+  id        Int  @id @default(autoincrement())
+  userId    Int
+  clusterId Int
+  unlocked  Boolean @default(false)
+  mastered  Boolean @default(false)
+}
+
+model Objective {
+  id        Int    @id @default(autoincrement())
+  clusterId Int
+  text      String
+  bloom     String
+  items     Item[]
+}
