@@ -1,0 +1,4 @@
+node_modules
+dist
+coverage
+# Add other files/folders to ignore for ESLint
