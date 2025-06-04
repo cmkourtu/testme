@@ -22,12 +22,15 @@ app.post('/api/upload', async (req, res) => {
 });
 
 app.post('/api/objectives/extract', async (req, res) => {
-  const text = req.body.text;
+  const { course, text } = req.body;
   if (typeof text !== 'string' || !text.trim()) {
     return res.status(400).json({ error: 'text required' });
   }
+  if (typeof course !== 'string' || !course.trim()) {
+    return res.status(400).json({ error: 'course required' });
+  }
   try {
-    const objectives = await extractObjectives(text);
+    const objectives = await extractObjectives(course, text);
     res.json({ objectives });
   } catch (err) {
     console.error(err);
