@@ -11,6 +11,7 @@
     "dev": "concurrently -n client,server -c green,cyan \"pnpm --filter client dev\" \"pnpm --filter server dev\"",
     "lint": "eslint \"**/*.{ts,tsx}\" --max-warnings=0",
     "test": "jest",
+    "coverage": "jest --coverage && node scripts/makeBadge.js",
     "seed": "pnpm --filter server exec prisma db push && pnpm exec tsx server/prisma/seed.ts"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "ts-jest": "^29.3.4",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "tsx": "^4.19.4"
+    "tsx": "^4.19.4",
+    "badge-maker": "^4.1.0"
   }
 }
