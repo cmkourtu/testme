@@ -8,33 +8,52 @@ generator client {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  uuid    String   @unique
-  reviews Review[]
+  id         Int         @id @default(autoincrement())
+  uuid       String      @unique
+  reviews    Review[]
+  itemStates ItemState[]
 }
 
 model Item {
-  id          Int       @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   objectiveId Int
   tier        Int
   stem        String
-  reference   Json
-  Objective   Objective @relation(fields: [objectiveId], references: [id])
+  reference   String
+  Objective   Objective   @relation(fields: [objectiveId], references: [id])
+  states      ItemState[]
+  reviews     Review[]
 }
 
 model Review {
-  id      Int   @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   userId  Int
   itemId  Int
   ts      DateTime @default(now())
   verdict String
   score   Float
-  Item    Item @relation(fields: [itemId], references: [id])
-  User    User @relation(fields: [userId], references: [id])
+  Item    Item     @relation(fields: [itemId], references: [id])
+  User    User     @relation(fields: [userId], references: [id])
+}
+
+model ItemState {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  itemId     Int
+  stability  Float
+  difficulty Float
+  ease       Float
+  lastReview DateTime @default(now())
+  nextDue    DateTime
+  p_recall   Float
+  Item       Item     @relation(fields: [itemId], references: [id])
+  User       User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, itemId])
 }
 
 model ObjectiveState {
-  id          Int  @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   userId      Int
   objectiveId Int
   p_mastery   Float
@@ -42,7 +61,7 @@ model ObjectiveState {
 }
 
 model ClusterState {
-  id        Int  @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   userId    Int
   clusterId Int
   unlocked  Boolean @default(false)
