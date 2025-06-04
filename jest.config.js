@@ -1,4 +1,5 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node'
+  testEnvironment: 'node',
+  coverageReporters: ['json', 'lcov', 'text', 'clover', 'json-summary']
 };
