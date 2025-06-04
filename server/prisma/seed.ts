@@ -20,7 +20,7 @@ async function main() {
               data: Array.from({ length: 3 }).map((__, j) => ({
                 tier: 1,
                 stem: `Seed stem C${i + 1}-${j + 1}`,
-                reference: { answer: 'demo' }
+                reference: JSON.stringify({ answer: 'demo' })
               }))
             }
           }
