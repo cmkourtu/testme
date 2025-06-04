@@ -4,11 +4,13 @@ import { Env } from './env';
 import { hello } from '../../shared/src';
 import { saveText } from './upload';
 import { extractObjectives } from './objectives';
+import { adminRouter } from './admin';
 
 // Express server exposing health check and upload route.
 export const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api', adminRouter);
 
 app.post('/api/upload', async (req, res) => {
   const text = req.body.text;
