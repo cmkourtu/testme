@@ -1,7 +1,5 @@
 # Cursor Learning
 
-![coverage](.github/badges/coverage.svg)
-
 Cursor Learning is an adaptive tutoring platform built as a pnpm workspace monorepo.
 It contains a React client, an Express API, and shared TypeScript utilities.
 

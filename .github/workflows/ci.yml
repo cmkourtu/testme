@@ -20,11 +20,3 @@ jobs:
         run: pnpm install
       - name: Lint
         run: pnpm lint
-      - name: Coverage
-        run: pnpm coverage
-      - name: Generate badge
-        uses: ImBIOS/lcov-coverage-badge@v1
-        with:
-          coverage-file: coverage/lcov.info
-          badge-path: .github/badges/coverage.svg
-          github-token: ${{ secrets.GITHUB_TOKEN }}
