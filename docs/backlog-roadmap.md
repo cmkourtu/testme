@@ -7,30 +7,30 @@ This document lists the backlog tickets and the planned sprint order for the Cur
 The backlog is organized by feature area. Each ticket has an ID used for reference.
 
 ### 0 · Project scaffolding
-| ID  | Title         | Description / subtasks                                                   | Acceptance criteria                              |
-|-----|---------------|--------------------------------------------------------------------------|-------------------------------------------------|
-| 0-1 | Init monorepo | pnpm init + workspaces root; add client, server, shared packages; Prettier + ESLint configs | `pnpm i && pnpm dev` spins Vite + nodemon. |
-| 0-2 | CI lint/test  | GitHub Actions with Node 20; run `pnpm lint`, `pnpm test`                 | PR fails on lint or failing Jest.               |
+| ID  | Title         | Description / subtasks                                                   | Acceptance criteria                              | Status |
+|-----|---------------|--------------------------------------------------------------------------|-------------------------------------------------|--------|
+| 0-1 | <span style="color: green">Init monorepo</span> | pnpm init + workspaces root; add client, server, shared packages; Prettier + ESLint configs | `pnpm i && pnpm dev` spins Vite + nodemon. | ✅ |
+| 0-2 | <span style="color: green">CI lint/test</span> | GitHub Actions with Node 20; run `pnpm lint`, `pnpm test`                 | PR fails on lint or failing Jest.               | ✅ |
 
 ### 1 · Core database layer
-| ID  | Title                    | Description                                                                                              | AC                                                          |
-|-----|--------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| 1-1 | Choose ORM               | Drizzle (lite) vs Prisma. Write decision doc.                                                             | Doc in `/docs` with pros/cons.                              |
-| 1-2 | Schema migration v0      | Implement tables from schema section (items, reviews, item_state, objective_state, cluster_state, users). | `pnpm server db:push` creates SQLite file.                  |
-| 1-3 | Seed demo data           | SQL seed for Chapter 1 Trees/Graphs: 8 clusters, ~20 objectives, 60 items (tier 1).                        | `SELECT count(*)` verifies counts.                          |
-| 1-4 | DB helper lib            | In `/shared/db.ts` expose typed CRUD wrappers.                                                            | Unit tests return typed objects.                            |
-| 1-5 | Docker Postgres for prod | Compose file with postgres:15 + volume; server reads `DATABASE_URL`.                                     | `docker compose up` starts API & db without errors.         |
+| ID  | Title                    | Description                                                                                              | AC                                                          | Status |
+|-----|--------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|--------|
+| 1-1 | <span style="color: green">Choose ORM</span>               | Drizzle (lite) vs Prisma. Write decision doc.                                                             | Doc in `/docs` with pros/cons.                              | ✅ |
+| 1-2 | <span style="color: green">Schema migration v0</span>      | Implement tables from schema section (items, reviews, item_state, objective_state, cluster_state, users). | `pnpm server db:push` creates SQLite file.                  | ✅ |
+| 1-3 | <span style="color: green">Seed demo data</span>           | SQL seed for Chapter 1 Trees/Graphs: 8 clusters, ~20 objectives, 60 items (tier 1).                        | `SELECT count(*)` verifies counts.                          | ✅ |
+| 1-4 | DB helper lib            | In `/shared/db.ts` expose typed CRUD wrappers.                                                            | Unit tests return typed objects.                            | |
+| 1-5 | Docker Postgres for prod | Compose file with postgres:15 + volume; server reads `DATABASE_URL`.                                     | `docker compose up` starts API & db without errors.         | |
 
 ### 2 · Backend foundational APIs
-| ID  | Title                 | Description                                                             | AC                                           |
-|-----|-----------------------|-------------------------------------------------------------------------|----------------------------------------------|
-| 2-1 | Express boilerplate   | `server/src/index.ts`, env loader, health route.                         | `GET /health` returns 200.                   |
-| 2-2 | Upload endpoint       | `POST /api/upload` accepts raw text JSON and saves to `tmp/` as `.txt`, returns `upload_id`. | `curl` upload returns 201 + id. |
-| 2-3 | Text chunker service| Split text into chunks ≤ **CHUNK_SIZE** (default 30k chars). | Jest: sample text returns array of chunks. |
-| 2-4 | Objective extractor route | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.   | For sample text returns ≥5 objectives.       |
-| 2-5 | CRUD objective/item   | REST routes `/objectives`, `/items` (GET/PUT/DELETE) for admin UI.      | Swagger doc passes.                           |
-| 2-6 | Session “next” route  | `/api/session/next` → scheduler pick logic.                             | Unit test returns item with correct tier.    |
-| 2-7 | Answer grading route  | `/api/session/:itemId/answer` posts user text → ensemble DeepSeek grader, writes reviews. | Correct answer returns verdict correct. |
+| ID  | Title                 | Description                                                             | AC                                           | Status |
+|-----|-----------------------|-------------------------------------------------------------------------|----------------------------------------------|--------|
+| 2-1 | <span style="color: green">Express boilerplate</span>   | `server/src/index.ts`, env loader, health route.                         | `GET /health` returns 200.                   | ✅ |
+| 2-2 | <span style="color: green">Upload endpoint</span>       | `POST /api/upload` accepts raw text JSON and saves to `tmp/` as `.txt`, returns `upload_id`. | `curl` upload returns 201 + id. | ✅ |
+| 2-3 | <span style="color: green">Text chunker service</span>| Split text into chunks ≤ **CHUNK_SIZE** (default 30k chars). | Jest: sample text returns array of chunks. | ✅ |
+| 2-4 | Objective extractor route | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.   | For sample text returns ≥5 objectives.       | |
+| 2-5 | CRUD objective/item   | REST routes `/objectives`, `/items` (GET/PUT/DELETE) for admin UI.      | Swagger doc passes.                           | |
+| 2-6 | Session “next” route  | `/api/session/next` → scheduler pick logic.                             | Unit test returns item with correct tier.    | |
+| 2-7 | Answer grading route  | `/api/session/:itemId/answer` posts user text → ensemble DeepSeek grader, writes reviews. | Correct answer returns verdict correct. | |
 
 ### 3 · Scheduler engine
 | ID  | Title                    | Description                                                      | AC                                             |
@@ -52,13 +52,13 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | 4-5 | Admin dashboard route   | `/api/admin/progress/:userId` returns mastery JSON.             | Returns correct mastered flags.                  |
 
 ### 5 · LLM Integration
-| ID  | Title                  | Description                                                   | AC                                            |
-|-----|------------------------|---------------------------------------------------------------|----------------------------------------------|
-| 5-1 | DeepSeek client util   | Axios wrapper with retries, timeout, rate-limit (token bucket). | Jest mocks retry logic.                      |
-| 5-2 | Ensemble grader        | `gradeFreeResponse(prompt, answer)` fan-outs 3 calls; majority vote.| Sim test outputs consistent verdicts.      |
-| 5-3 | Objective extract prompt | System + user template; parse JSON response.                  | Returns valid JSON list.                     |
-| 5-4 | Item generator prompt  | Template supports tier, Bloom verb, avoids duplicates.         | Generates ≥3 tiers for sample objective.     |
-| 5-5 | Cost logging middleware | Write per-call token counts to `llm_usage` table.             | Sum of tokens matches DeepSeek metadata.     |
+| ID  | Title                  | Description                                                   | AC                                            | Status |
+|-----|------------------------|---------------------------------------------------------------|----------------------------------------------|--------|
+| 5-1 | <span style="color: green">DeepSeek client util</span>   | Axios wrapper with retries, timeout, rate-limit (token bucket). | Jest mocks retry logic.                      | ✅ |
+| 5-2 | Ensemble grader        | `gradeFreeResponse(prompt, answer)` fan-outs 3 calls; majority vote.| Sim test outputs consistent verdicts.      | |
+| 5-3 | Objective extract prompt | System + user template; parse JSON response.                  | Returns valid JSON list.                     | |
+| 5-4 | Item generator prompt  | Template supports tier, Bloom verb, avoids duplicates.         | Generates ≥3 tiers for sample objective.     | |
+| 5-5 | Cost logging middleware | Write per-call token counts to `llm_usage` table.             | Sum of tokens matches DeepSeek metadata.     | |
 
 ### 6 · Front-end: learner flow
 | ID  | Title                 | Description                                                  | AC                                           |
