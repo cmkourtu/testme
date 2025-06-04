@@ -3,6 +3,7 @@ import cors from 'cors';
 import { Env } from './env';
 import { hello } from '../../shared/src';
 import { saveText } from './upload';
+import { extractObjectives } from './objectives';
 
 // Express server exposing health check and upload route.
 export const app = express();
@@ -16,6 +17,20 @@ app.post('/api/upload', async (req, res) => {
   }
   const uploadId = await saveText(text);
   res.status(201).json({ upload_id: uploadId });
+});
+
+app.post('/api/objectives/extract', async (req, res) => {
+  const text = req.body.text;
+  if (typeof text !== 'string' || !text.trim()) {
+    return res.status(400).json({ error: 'text required' });
+  }
+  try {
+    const objectives = await extractObjectives(text);
+    res.json({ objectives });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'llm_error' });
+  }
 });
 
 app.get('/health', (_, res) => res.json({ status: 'ok', msg: hello() }));
