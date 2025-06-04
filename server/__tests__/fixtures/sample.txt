@@ -1,0 +1,256 @@
+The world is too rich and complex for our minds to grasp it whole, for
+our minds are but a small part of the richness of the world. To cope with
+the complexity, we reason hierarchically. We divide the world into small,
+comprehensible pieces: systems. Systems are ubiquitous: a CPU, a memory
+chips, a motor, a web server, a jumbo jet, the solar system, the telephone
+system, or a circulatory system. Systems are a useful abstraction, chosen
+because their external interactions are weaker than their internal interactions.
+That properties makes independent analysis meaningful.
+Systems interact with other systems via forces, messages, or in general via
+information or signals. ‘Signals and systems’ is the study of systems and
+their interaction.
+This book studies only discrete-time systems, where time jumps rather
+than changes continuously. This restriction is not as severe as its seems.
+First, digital computers are, by design, discrete-time devices, so discrete-
+time signals and systems includes digital computers. Second, almost all
+the important ideas in discrete-time systems apply equally to continuous-
+time systems.
+Alas, even discrete-time systems are too diverse for one method of analysis.
+Therefore even the abstraction of systems needs subdivision. The particular
+class of so-called linear and time-invariant systems admits powerful
+tools of analysis and design. The benefit of restricting ourselves to such
+2 1.1 Rabbits
+systems, and the meaning of the restrictions, will become clear in subsequent
+chapters.
+1.1 Rabbits
+Here is Fibonacci’s problem [6, 10], a famous discrete-time, linear, time-
+invariant system and signal:
+A certain man put a pair of rabbits in a place surrounded on all sides by a wall.
+How many pairs of rabbits can be produced from that pair in a year if it is
+supposed that every month each pair begets a new pair which from the second
+month on becomes productive?
+1.1.1 Mathematical representation
+This system consists of the rabbit pairs and the rules of rabbit reproduction.
+The signal is the sequence f where f[n] is the number of rabbit pairs at
+month n (the problem asks about n = 12).
+What is f in the first few months?
+In month 0, one rabbit pair immigrates into the system: f[0] = 1. Let’s
+assume that the immigrants are children. Then they cannot have their own
+children in month 1 – they are too young – so f[1] = 1. But this pair is an
+adult pair, so in month 2 the pair has children, making f[2] = 2.
+Finding f[3] requires considering the adult and child pairs separately (hierarchical
+reasoning), because each type behaves according to its own reproduction
+rule. The child pair from month 2 grows into adulthood in month
+3, and the adult pair from month 2 begets a child pair. So in f[3] = 3: two
+adult and one child pair.
+The two adult pairs contribute two child pairs in month 4, and the one
+child pair grows up, contributing an adult pair. So month 4 has five pairs:
+two child and three adult pairs. To formalize this reasoning process, define
+two intermediate signals c and a:
+c[n] = number of child pairs at month n;
+a[n] = number of adult pairs at month n.
+The total number of pairs at month n is f[n] = c[n] + a[n]. Here is a table
+showing the three signals c, a, and f:
+1 Difference equations
+3
+n 0 1 2 3
+c 1 0 1 1
+a 0 1 1 2
+f 1 1 2 3
+The arrows in the table show how new entries are constructed. An upward
+diagonal arrow represents the only means to make new children, namely
+from last month’s adults:
+a[n − 1] → c[n] or c[n] = a[n − 1].
+A horizontal arrow represents one contribution to this month’s adults, that
+adults last month remain adults: a[n − 1] → a[n]. A downward diagonal
+arrow represents the other contribution to this month’s adults, that last
+month’s children grow up into adults: c[n− 1] → a[n]. The sum of the two
+contributions is
+a[n] = a[n − 1] + c[n − 1].
+What is the difference equation for f itself?
+To find the equation for f, one has at least two methods: logical deduction
+(Problem 1.1) or trial and error. Trial and error is better suited for finding
+results, and logical deduction is better suited for verifying them. Therefore,
+using trial and error, look for a pattern among addition samples of f:
+n 0 1 2 3 4 5 6
+c 1 0 1 1 2 3 5
+a 0 1 1 2 3 5 8
+f 1 1 2 3 5 8 13
+What useful patterns live in these data?
+One prominent pattern is that the signals c, a, and f look like shifted versions
+of each other:
+a[n] = f[n − 1];
+c[n] = a[n − 1] = f[n − 2];
+Since f[n] = a[n] + c[n],
+4 1.1 Rabbits
+f[n] = f[n− 1] + f[n− 2].
+with initial conditions f[0] = f[1] = 1.
+This mathematical description, or representation, clarifies a point that is
+not obvious in the verbal description: that the number of rabbit pairs in
+any month depends on the number in the two preceding months. This
+difference equation is said to be a second-order difference equation. Since
+its coefficients are all unity, and the signs are positive, it is the simplest
+second-order difference equation. Yet its behavior is rich and complex.
+Problem 1.1 Verifying the conjecture
+Use the two intermediate equations
+c[n] = a[n− 1],
+a[n] = a[n− 1] + c[n− 1];
+and the definition f[n] = a[n] + c[n] to confirm the conjecture
+f[n] = f[n− 1] + f[n− 2].
+1.1.2 Closed-form solution
+The rabbit difference equation is an implicit recipe that computes new values
+from old values. But does it have a closed form: an explicit formula
+for f[n] that depends on n but not on preceding samples? As a step toward
+finding a closed form, let’s investigate how f[n] behaves as n becomes
+large.
+Does f[n] grow like a polynomial in n, like a logarithmic function of n, or like an
+exponential function of n?
+Deciding among these options requires more data. Here are many values
+of f[n] (starting with month 0):
+1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, . . .
+1 Difference equations
+5
+The samples grow quickly. Their growth
+is too rapid to be logarithmic, unless f[n]
+ln f [n]
+is an unusual function like (log n)20
+. Their
+growth is probably also too rapid for f[n]
+to be a polynomial in n, unless f[n] is n
+a high-degree polynomial. A likely alternative
+is exponential growth. To test
+that hypothesis, use pictorial reasoning by plotting ln f[n] versus n. The
+plotted points oscillate above and below a best-fit straight line. Therefore
+ln f[n] grows almost exactly linearly with n, and f[n] is approximately an
+exponential function of n:
+f[n] ≈ Azn
+,
+where z and A are constants.
+How can z be estimated from f[n] data? n f[n]/f[n − 1]
+Because the plotted points fall ever closer to the
+10 1.6181818181818
+best-fit line as n grows, the exponential approx-
+20 1.6180339985218
+imation f[n] ≈ Azn becomes more exact as n 30 1.6180339887505
+grows. If the approximation were exact, then f[n]/f[n−
+40 1.6180339887499
+1] would always equal z, so f[n]/f[n−1] becomes 50 1.6180339887499
+an ever closer approximation to z as n increases.
+These ratios seem to converge to z = 1.6180339887499.
+Its first few digits 1.618 might be familiar. For a memory amplifier, feed
+the ratio to the online Inverse Symbolic Calculator (ISC). Given a number,
+it guesses its mathematical source. When given the Fibonacci z, the Inverse
+Symbolic Calculator suggests two equivalent forms: that z is a root
+of 1 − x − x2 or that it is φ ≡ (1 + √
+5)/2. The constant φ is the famous
+golden ratio [5].
+Therefore, f[n] ≈ Aφn
+. To find the constant of
+proportionality A, take out the big part by dividing
+f[n] by φn
+. These ratios hover around
+0.723 . . ., so perhaps A is √ 3 − 1. Alas, experiments with larger values of n strongly suggest
+that the digits continue 0.723606 . . . whereas √ 3−
+1 = 0.73205 . . .. A bit of experimentation or the Inverse Symbolic Calculator suggests that
+0.72360679774998 probably originates from φ/ √
+5.
+n f[n]/f[n − 1]
+10
+20
+30
+40
+0.72362506926472
+0.72360679895785
+0.72360679775006
+0.72360679774998
+50 0.72360679774998
+6 1.1 Rabbits
+n r[n]/r[n − 1]
+2 −0.61803398874989601
+3 −0.61803398874989812
+4 −0.61803398874988624
+5 −0.61803398874993953
+6 −0.61803398874974236
+7 −0.61803398875029414
+8 −0.61803398874847626
+9 −0.61803398875421256
+10 −0.61803398873859083
+This conjecture has the merit of reusing the √
+5 already contained in the definition
+of φ, so it does not introduce a new arbitrary number. With that
+conjecture for A, the approximation for f[n] becomes
+φn+1
+f[n] ≈ √ .
+5
+How accurate is this approximation?
+To test the approximation, take out the big part by computing the residual:
+√
+r[n] = f[n] − φn+1/ 5. The residual decays rapidly, perhaps expo​nentially. Then r has the general form r[n] ≈ Byn
+,
+where y and B are constants. To find y,
+compute the ratios r[n]/r[n − 1]. They con​nverge to −0.61803 . . ., which is almost ex-
+n
+actly 1 − φ or −1/φ. Therefore r[n] ≈ B(−1/φ).
+What is the constant of proportionality B?
+ n
+To compute B, divide r[n] by (−1/φ). These values, if n is not too large
+(Problem 1.2), almost instantly settles on 0.27639320225. With luck, this
+number can be explained using φ and √
+5. A few numerical experiments
+suggest the conjecture
+1 1
+B =
+√ × .
+5 φ
+The residual becomes
+1 1
+r[n] = − √ × −
+5 φ
+� �n+1
+.
+The number of rabbit pairs is the sum of the approximation Azn and the
+residual Byn:
+ f[n] = √
+1 φn+1 − (−φ)−(n+1)
+5
+� �
+.
+1 Difference equations
+7
+How bizarre! The Fibonacci signal f splits into two signals in at least two
+ways. First, it is the sum of the adult-pairs signal a and the child-pairs
+signal c. Second, it is the sum f1 + f2 where f1 and f2 are defined by
+1
+f1[n] ≡ √ φn+1;
+5
+1
+f2[n] ≡ −
+√ (−1/φ)n+1
+.
+5
+The equivalence of these decompositions would have been difficult to predict.
+Instead, many experiments and guesses were needed to establish
+the equivalence. Another kind of question, also hard to answer, arises by
+changing merely the plus sign in the Fibonacci difference equation into a
+minus sign:
+ g[n] = g[n − 1] − g[n − 2].
+With corresponding initial conditions, namely g[0] = g[1] = 1, the signal g
+runs as follows (staring with n = 0):
+1, 1, 0, −1, −1, 0, 1, 1, 0, −1, −1, 0, . . . .
+� �� �
+one period
+Rather than growing approximately exponentially, this sequence is exactly
+periodic. Why? Furthermore, it has period 6. Why? How can this period
+be predicted without simulation?
+A representation suited for such questions is introduced in ??. For now,
+let’s continue investigating difference equations to represent systems.
+Problem 1.2 Actual residual
+Here is a semilog graph of the absolute residual
+|r[n]| computed numerically up to n =
+80. (The absolute residual is used because
+the residual is often negative and would
+have a complex logarithm.) It follows the
+predicted exponential decay for a while, but
+then misbehaves. Why?
+ln r[n]
+n

@@ -9,9 +9,13 @@ afterEach(async () => {
 });
 
 test('upload route saves text', async () => {
-  const res = await request(app).post('/api/upload').send({ text: 'hello' });
+  const sample = await fs.readFile(
+    path.join(__dirname, 'fixtures', 'sample.txt'),
+    'utf8'
+  );
+  const res = await request(app).post('/api/upload').send({ text: sample });
   expect(res.status).toBe(201);
-  const id = res.body.id;
+  const id = res.body.upload_id;
   const saved = await fs.readFile(path.join(UPLOAD_DIR, `${id}.txt`), 'utf8');
-  expect(saved).toBe('hello');
+  expect(saved).toBe(sample);
 });

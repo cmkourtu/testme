@@ -14,8 +14,8 @@ app.post('/api/upload', async (req, res) => {
   if (typeof text !== 'string' || !text.trim()) {
     return res.status(400).json({ error: 'text required' });
   }
-  const id = await saveText(text);
-  res.status(201).json({ id });
+  const uploadId = await saveText(text);
+  res.status(201).json({ upload_id: uploadId });
 });
 
 app.get('/health', (_, res) => res.json({ status: 'ok', msg: hello() }));
