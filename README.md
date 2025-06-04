@@ -1,6 +1,6 @@
 # Cursor Learning
 
-[![Coverage](https://codecov.io/gh/cmkourtu/cursor-learning/branch/main/graph/badge.svg)](https://codecov.io/gh/cmkourtu/cursor-learning)
+[![GitHub Coverage](https://img.shields.io/badge/GitHub%20coverage-XX%25-brightgreen.svg)](https://github.com/cmkourtu/cursor-learning/actions)
 
 Cursor Learning is an adaptive tutoring platform built as a pnpm workspace monorepo.
 It contains a React client, an Express API, and shared TypeScript utilities.

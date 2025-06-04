@@ -22,3 +22,8 @@ jobs:
         run: pnpm lint
       - name: Coverage
         run: pnpm coverage
+      - name: Upload coverage
+        uses: actions/upload-coverage@v1
+        with:
+          coverage-file: coverage/coverage-final.json
+          token: ${{ github.token }}
