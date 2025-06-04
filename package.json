@@ -13,7 +13,6 @@
     "test": "jest",
     "seed": "pnpm --filter server exec prisma db push && pnpm exec tsx server/prisma/seed.ts"
   },
-  "postinstall": "pnpm --filter server exec prisma generate",
   "devDependencies": {
     "@types/cors": "^2.8.18",
     "@types/jest": "^29.5.14",
