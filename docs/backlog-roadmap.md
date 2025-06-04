@@ -18,7 +18,7 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | 1-1 | <span style="color: green">Choose ORM</span>               | Drizzle (lite) vs Prisma. Write decision doc.                                                             | Doc in `/docs` with pros/cons.                              | ✅ |
 | 1-2 | <span style="color: green">Schema migration v0</span>      | Implement tables from schema section (items, reviews, item_state, objective_state, cluster_state, users). | `pnpm server db:push` creates SQLite file.                  | ✅ |
 | 1-3 | <span style="color: green">Seed demo data</span>           | SQL seed for Chapter 1 Trees/Graphs: 8 clusters, ~20 objectives, 60 items (tier 1).                        | `SELECT count(*)` verifies counts.                          | ✅ |
-| 1-4 | DB helper lib            | In `/shared/db.ts` expose typed CRUD wrappers.                                                            | Unit tests return typed objects.                            | ✅ |
+| 1-4 | <span style="color: green">DB helper lib</span>            | In `/shared/db.ts` expose typed CRUD wrappers.                                                            | Unit tests return typed objects.                            | ✅ |
 | 1-5 | Docker Postgres for prod | Compose file with postgres:15 + volume; server reads `DATABASE_URL`.                                     | `docker compose up` starts API & db without errors.         | |
 
 ### 2 · Backend foundational APIs
@@ -27,7 +27,7 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | 2-1 | <span style="color: green">Express boilerplate</span>   | `server/src/index.ts`, env loader, health route.                         | `GET /health` returns 200.                   | ✅ |
 | 2-2 | <span style="color: green">Upload endpoint</span>       | `POST /api/upload` accepts raw text JSON and saves to `tmp/` as `.txt`, returns `upload_id`. | `curl` upload returns 201 + id. | ✅ |
 | 2-3 | <span style="color: green">Text chunker service</span>| Split text into chunks ≤ **CHUNK_SIZE** (default 30k chars). | Jest: sample text returns array of chunks. | ✅ |
-| 2-4 | Objective extractor route | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.   | For sample text returns ≥5 objectives.       | |
+| 2-4 | <span style="color: green">Objective extractor route</span> | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.   | For sample text returns ≥5 objectives.       | ✅ |
 | 2-5 | CRUD objective/item   | REST routes `/objectives`, `/items` (GET/PUT/DELETE) for admin UI.      | Swagger doc passes.                           | |
 | 2-6 | Session “next” route  | `/api/session/next` → scheduler pick logic.                             | Unit test returns item with correct tier.    | |
 | 2-7 | Answer grading route  | `/api/session/:itemId/answer` posts user text → ensemble DeepSeek grader, writes reviews. | Correct answer returns verdict correct. | |
