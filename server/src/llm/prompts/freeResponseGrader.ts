@@ -1,0 +1,1 @@
+export const freeResponseGraderPrompt = `You are a strict grader. Evaluate the user's answer to the prompt and return JSON {"verdict": "correct|partial|incorrect|blank|unsure", "feedback": "..."}. Only respond with JSON.`;
