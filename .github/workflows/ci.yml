@@ -22,8 +22,9 @@ jobs:
         run: pnpm lint
       - name: Coverage
         run: pnpm coverage
-      - name: Upload coverage
-        uses: actions/upload-coverage@v1
+      - name: Generate badge
+        uses: ImBIOS/lcov-coverage-badge@v1
         with:
-          coverage-file: coverage/coverage-final.json
-          token: ${{ github.token }}
+          coverage-file: coverage/lcov.info
+          badge-path: .github/badges/coverage.svg
+          github-token: ${{ secrets.GITHUB_TOKEN }}
