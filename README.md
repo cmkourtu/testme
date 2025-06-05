@@ -19,13 +19,12 @@ pnpm install
 
 ## Development
 
-- **Start servers** – `pnpm dev` (runs client and server concurrently).
+- **Start servers** – `pnpm dev` (seeds the database then runs client and server concurrently).
 - **Lint** – `pnpm lint`
 - **Test** – `pnpm test`
-- **Seed database** – `pnpm seed`
+- **Seed database manually** – `pnpm seed`
 
-Always run lint and tests before committing. The seed command pushes the Prisma
-schema and populates demo data in `server/prisma/seed.ts`.
+`pnpm dev` automatically pushes the Prisma schema and seeds demo data before starting the servers. Always run lint and tests before committing.
 
 ## Architecture Overview
 
@@ -66,7 +65,7 @@ An example environment file lives at `.env.example` and includes a
 ## Running in Development
 
 ```bash
-pnpm dev      # start client and server
+pnpm dev      # seed then start client and server
 pnpm lint     # run ESLint
 pnpm test     # execute unit tests
 
