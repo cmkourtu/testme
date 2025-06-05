@@ -49,7 +49,7 @@ interface Extracted { text: string }
 
   if (step === 1) {
     return (
-      <div>
+      <div key="upload">
         <h2>Upload File</h2>
         <input type="file" onChange={handleFile} />
       </div>
@@ -58,7 +58,7 @@ interface Extracted { text: string }
 
   if (step === 2) {
     return (
-      <div>
+      <div key="edit">
         <h2>Edit Objectives</h2>
         <input
           placeholder="Course Title"
@@ -86,7 +86,7 @@ interface Extracted { text: string }
   }
 
   return (
-    <div>
+    <div key="confirm">
       <h2>Confirm</h2>
       <p>Title: {title}</p>
       <ul>
