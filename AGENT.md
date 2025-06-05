@@ -34,6 +34,7 @@
 4. For new database migrations, update `schema.prisma` and run `pnpm --filter server prisma db push`; include generated client in commits.
 5. Any new script or route should include a brief description in comments explaining its role in the Scheduler/Gatekeeper workflow.
 6. Commit messages should be concise ("feat: add objective extractor" or "fix: update lint config").
+7. The backlog may be outdated. Do not assume it reflects the current state. After closing a ticket mentioned in `docs/backlog-roadmap.md`, update that file accordingly.
 
 ## Testing Checklist
 Before opening a PR:
