@@ -37,3 +37,29 @@ test('DELETE /api/objectives/:id returns 204', async () => {
   const res = await request(app).delete('/api/objectives/1');
   expect(res.status).toBe(204);
 });
+
+
+test('PUT /api/objectives/:id handles missing objective', async () => {
+  (db.objective.update as jest.Mock).mockRejectedValue(new Error('not found'));
+  const res = await request(app).put('/api/objectives/1').send({ text: 'x' });
+  expect(res.status).toBe(404);
+});
+
+test('GET /api/items returns list', async () => {
+  (db.item.findMany as jest.Mock).mockResolvedValue([{ id: 1 }]);
+  const res = await request(app).get('/api/items');
+  expect(res.status).toBe(200);
+  expect(res.body.items).toHaveLength(1);
+});
+
+test('DELETE /api/items/:id handles missing item', async () => {
+  (db.item.delete as jest.Mock).mockRejectedValue(new Error('nope'));
+  const res = await request(app).delete('/api/items/1');
+  expect(res.status).toBe(404);
+});
+
+test('DELETE /api/items/:id returns 204', async () => {
+  (db.item.delete as jest.Mock).mockResolvedValue({});
+  const res = await request(app).delete('/api/items/2');
+  expect(res.status).toBe(204);
+});

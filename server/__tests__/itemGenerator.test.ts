@@ -60,3 +60,17 @@ test('generateTieredItems requests three tiers', async () => {
   expect(items.map((i) => i.tier)).toEqual([1, 3, 5]);
   expect(mockChat).toHaveBeenCalledTimes(3);
 });
+
+test('generateItem rejects on invalid JSON', async () => {
+  mockChat.mockResolvedValue({ choices: [{ message: { content: 'bad' } }] });
+  await expect(
+    generateItem({ objective: 'o', bloom: 'b', tier: 1, context: 'c', previous: [] })
+  ).rejects.toThrow('invalid_response');
+});
+
+test('generateItem rejects when not object', async () => {
+  mockChat.mockResolvedValue({ choices: [{ message: { content: '5' } }] });
+  await expect(
+    generateItem({ objective: 'o', bloom: 'b', tier: 1, context: 'c', previous: [] })
+  ).rejects.toThrow('invalid_response');
+});
