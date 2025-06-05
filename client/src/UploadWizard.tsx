@@ -3,8 +3,10 @@ import { apiFetch } from './api';
 
 export function UploadWizard() {
   const [step, setStep] = useState(1);
-interface Extracted { text: string }
+  interface Extracted { text: string }
+
   const [fileText, setFileText] = useState('');
+  const [typedText, setTypedText] = useState('');
   const [title, setTitle] = useState('');
   const [objectives, setObjectives] = useState<string[]>([]);
   const [uploadId, setUploadId] = useState('');
@@ -18,6 +20,19 @@ interface Extracted { text: string }
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
+    });
+    const data = await res.json();
+    setUploadId(data.upload_id);
+    setStep(2);
+  };
+
+  const handleText = async () => {
+    if (!typedText.trim()) return;
+    setFileText(typedText);
+    const res = await apiFetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: typedText }),
     });
     const data = await res.json();
     setUploadId(data.upload_id);
@@ -42,6 +57,7 @@ interface Extracted { text: string }
     });
     setStep(1);
     setFileText('');
+    setTypedText('');
     setObjectives([]);
     setTitle('');
     alert('Saved');
@@ -50,8 +66,14 @@ interface Extracted { text: string }
   if (step === 1) {
     return (
       <div key="upload">
-        <h2>Upload File</h2>
+        <h2>Upload File or Paste Text</h2>
         <input type="file" onChange={handleFile} />
+        <textarea
+          placeholder="Paste text here"
+          value={typedText}
+          onChange={(e) => setTypedText(e.target.value)}
+        />
+        <button onClick={handleText}>Use Text</button>
       </div>
     );
   }
