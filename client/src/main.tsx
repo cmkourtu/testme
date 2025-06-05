@@ -1,4 +1,9 @@
+import React from 'react';
+import { createRoot } from 'react-dom/client';
 import { initAnonUser } from './auth';
+import { UploadWizard } from './UploadWizard';
 
 initAnonUser();
-console.log('Client placeholder');
+
+const root = createRoot(document.getElementById('root')!);
+root.render(<UploadWizard />);

@@ -64,7 +64,7 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | ID  | Title                 | Description                                                  | AC                                           |
 |-----|-----------------------|--------------------------------------------------------------|----------------------------------------------|
 | 6-1 | Auth stub             | Anonymous UUID in `localStorage`; attach header `X-User`.    | Requests include header.                     |
-| 6-2 | Upload wizard UI      | Step 1 file drop; Step 2 objective list editable; Step 3 confirm.| Saving creates course record.              |
+| 6-2 | <span style="color: green">Upload wizard UI</span>      | Step 1 file drop; Step 2 objective list editable; Step 3 confirm.| Saving creates course record.              | ✅ |
 | 6-3 | Practice view         | Card with stem, textarea, submit, feedback toast.            | Autoloads next item on verdict.              |
 | 6-4 | Progress dashboard    | Rings per cluster, chapter bar, streak counter.              | Renders from `/progress` JSON.               |
 | 6-5 | Toast + unlock animation | On `clusterUnlocked` socket event show celebration.        | Works in dev over hot reload.                |

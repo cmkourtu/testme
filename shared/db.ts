@@ -54,3 +54,10 @@ export const objective = {
   update: (args: Prisma.ObjectiveUpdateArgs) => db.objective.update(args),
   remove: (where: Prisma.ObjectiveWhereUniqueInput) => db.objective.delete({ where }),
 };
+
+export const course = {
+  create: (args: Prisma.CourseCreateArgs) => db.course.create(args),
+  find: (where: Prisma.CourseWhereUniqueInput) => db.course.findUnique({ where }),
+  update: (args: Prisma.CourseUpdateArgs) => db.course.update(args),
+  remove: (where: Prisma.CourseWhereUniqueInput) => db.course.delete({ where }),
+};

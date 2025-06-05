@@ -5,12 +5,14 @@ import { hello } from '../../shared/src';
 import { saveText } from './upload';
 import { extractObjectives } from './objectives';
 import { adminRouter } from './admin';
+import { courseRouter } from "./courses";
 
 // Express server exposing health check and upload route.
 export const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api', adminRouter);
+app.use("/api/courses", courseRouter);
 
 app.post('/api/upload', async (req, res) => {
   const text = req.body.text;

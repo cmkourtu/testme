@@ -75,3 +75,10 @@ model Objective {
   bloom     String
   items     Item[]
 }
+
+model Course {
+  id        Int      @id @default(autoincrement())
+  title     String
+  uploadId  String
+  createdAt DateTime @default(now())
+}
