@@ -11,3 +11,17 @@ export async function apiFetch(
   };
   return fetch(input, { ...init, headers });
 }
+
+export async function fetchNextItem() {
+  const res = await apiFetch('/api/session/next');
+  return res.json();
+}
+
+export async function submitAnswer(itemId: number, answer: string) {
+  const res = await apiFetch(`/api/session/${itemId}/answer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ answer }),
+  });
+  return res.json();
+}
