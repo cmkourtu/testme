@@ -50,8 +50,9 @@ request while Gatekeeper runs roughly every 30 seconds.
 - **LLM utilities** – `server/src/llm`
 - **Shared utilities** – `shared/src`
 
-An example environment file lives at `.env.example` and currently expects a
-`DEEPSEEK_API_KEY` for the LLM client.
+An example environment file lives at `.env.example` and includes a
+`DEEPSEEK_API_KEY` for the LLM client. The API port can be configured via
+`PORT` (defaults to `3000`).
 
 ## Directory Structure
 
@@ -68,12 +69,31 @@ An example environment file lives at `.env.example` and currently expects a
 pnpm dev      # start client and server
 pnpm lint     # run ESLint
 pnpm test     # execute unit tests
+
 pnpm seed     # push schema and seed demo data
 ```
+
+Once the dev servers are running, Vite serves the React client on
+`http://localhost:5173`. Open this address in your browser to use the
+Upload Wizard UI. The Express API listens on the `PORT` environment
+variable (default `3000`).
 
 The API serves a simple health check at `/health` returning a message from the
 shared package.
 
+## Current Features
+
+- **Text Upload** – `POST /api/upload` saves raw text and returns an `upload_id`.
+- **Objective Extraction** – `POST /api/objectives/extract` sends text to the
+  DeepSeek LLM and returns a JSON list of objectives.
+- **Course Creation** – `POST /api/courses` associates a title with an uploaded
+  text file.
+- **Admin CRUD** – `/api/objectives` and `/api/items` expose basic management
+  routes.
+- **Upload Wizard UI** – Front-end flow for file or text input, objective edit,
+  and course save.
+- **Practice View** – Simple learner interface that submits free responses and
+  loads the next item.
 ---
 
 Contributions should follow the coding guidelines in `AGENT.md`, keeping
