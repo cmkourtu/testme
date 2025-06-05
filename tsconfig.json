@@ -5,10 +5,16 @@
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node", "jest"],
+    "types": [
+      "node",
+      "jest"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["shared/src/*"]
-    }
+      "@shared/*": [
+        "shared/src/*"
+      ]
+    },
+    "jsx": "react-jsx"
   }
 }
