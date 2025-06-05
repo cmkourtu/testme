@@ -19,3 +19,8 @@ test('upload route saves text', async () => {
   const saved = await fs.readFile(path.join(UPLOAD_DIR, `${id}.txt`), 'utf8');
   expect(saved).toBe(sample);
 });
+
+test('upload route validates text', async () => {
+  const res = await request(app).post('/api/upload').send({});
+  expect(res.status).toBe(400);
+});

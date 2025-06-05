@@ -57,3 +57,10 @@ test('all different verdicts escalate', async () => {
   expect(res.verdict).toBe('escalate');
   expect(res.score).toBeNull();
 });
+
+test('invalid JSON defaults to incorrect', async () => {
+  mockChat.mockResolvedValue({ choices: [{ message: { content: 'oops' } }] });
+  const res = await gradeFreeResponse('Q', 'A');
+  expect(res.verdict).toBe('incorrect');
+  expect(res.score).toBe(0);
+});

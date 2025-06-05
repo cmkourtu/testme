@@ -34,3 +34,28 @@ test('objective extractor returns objects', async () => {
   expect(res.body.objectives[0].id).toBe('A-1');
 });
 
+
+test('extract requires text', async () => {
+  const res = await request(app)
+    .post('/api/objectives/extract')
+    .send({ course: 'Demo' });
+  expect(res.status).toBe(400);
+});
+
+test('extract requires course', async () => {
+  const res = await request(app)
+    .post('/api/objectives/extract')
+    .send({ text: 'hi' });
+  expect(res.status).toBe(400);
+});
+
+test('LLM failure returns 500', async () => {
+  const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  nock('https://api.deepseek.com').post('/v1/chat/completions').reply(500);
+  const res = await request(app)
+    .post('/api/objectives/extract')
+    .send({ course: 'Demo', text: 'x' });
+  expect(res.status).toBe(500);
+  expect(spy).toHaveBeenCalled();
+  spy.mockRestore();
+});
