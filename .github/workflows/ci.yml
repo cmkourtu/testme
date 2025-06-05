@@ -20,5 +20,7 @@ jobs:
         run: pnpm install
       - name: Lint
         run: pnpm lint
+      - name: Dev
+        run: pnpm dev:test
       - name: Coverage
         run: pnpm coverage
