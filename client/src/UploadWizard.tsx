@@ -40,13 +40,21 @@ export function UploadWizard() {
   };
 
   const extractObjectives = async () => {
-    const res = await apiFetch('/api/objectives/extract', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ course: title, text: fileText }),
-    });
-    const data = await res.json();
-    setObjectives(data.objectives.map((o: Extracted) => o.text));
+    try {
+      const res = await apiFetch('/api/objectives/extract', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ course: title, text: fileText }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error ?? 'server_error');
+      }
+      const data = await res.json();
+      setObjectives(data.objectives.map((o: Extracted) => o.text));
+    } catch {
+      alert('Failed to load objectives');
+    }
   };
 
   const saveCourse = async () => {
