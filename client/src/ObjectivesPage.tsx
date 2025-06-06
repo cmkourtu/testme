@@ -18,6 +18,7 @@ export function ObjectivesPage() {
 
   const extract = async () => {
     if (!text.trim() || !course.trim()) return;
+    console.log('Sending objective extraction request');
     setLoading(true);
     try {
       const res = await apiFetch('/api/objectives/extract', {
@@ -27,11 +28,14 @@ export function ObjectivesPage() {
       });
       if (!res.ok) throw new Error('server_error');
       const data = await res.json();
+      console.log('Objectives received:', data.objectives);
       setObjectives(data.objectives.map((o: Extracted) => o.text));
-    } catch {
+    } catch (err) {
+      console.error('Failed to load objectives', err);
       alert('Failed to load objectives');
     } finally {
       setLoading(false);
+      console.log('Request complete');
     }
   };
 
@@ -53,9 +57,11 @@ export function ObjectivesPage() {
       <button onClick={extract} disabled={loading}>
         {loading ? 'Loading...' : 'Extract'}
       </button>
-      {!!objectives.length && (
-        <textarea readOnly value={objectives.join('\n')} />
-      )}
+      <textarea
+        readOnly
+        placeholder="Objectives will appear here"
+        value={objectives.join('\n')}
+      />
     </div>
   );
 }

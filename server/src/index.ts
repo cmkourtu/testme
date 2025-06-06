@@ -32,7 +32,9 @@ app.post('/api/objectives/extract', async (req, res) => {
     return res.status(400).json({ error: 'course required' });
   }
   try {
+    console.log('Extracting objectives for', course);
     const objectives = await extractObjectives(course, text);
+    console.log('Objectives extracted:', objectives.length);
     res.json({ objectives });
   } catch (err) {
     console.error(err);
