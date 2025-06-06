@@ -32,3 +32,21 @@ test('typed text flow', async () => {
   await waitFor(() => expect(mockFetch).toHaveBeenCalled());
   await waitFor(() => getByText('Edit Objectives'));
 });
+
+test('alert on extraction failure', async () => {
+  mockFetch.mockClear();
+  mockFetch
+    .mockResolvedValueOnce({ json: async () => ({ upload_id: 'u1' }) })
+    .mockResolvedValueOnce({ ok: false, json: async () => ({ error: 'bad' }) });
+  const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+  const { getByPlaceholderText, getByText } = render(<UploadWizard />);
+  fireEvent.change(getByPlaceholderText('Paste text here'), {
+    target: { value: 'hello' },
+  });
+  fireEvent.click(getByText('Use Text'));
+  await waitFor(() => getByText('Edit Objectives'));
+
+  fireEvent.click(getByText('Load'));
+  await waitFor(() => expect(alertSpy).toHaveBeenCalledWith('Failed to load objectives'));
+});
