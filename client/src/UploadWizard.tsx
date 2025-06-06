@@ -14,6 +14,7 @@ export function UploadWizard() {
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    console.log('Reading file:', file.name);
     const text = await file.text();
     setFileText(text);
     const res = await apiFetch('/api/upload', {
@@ -22,6 +23,7 @@ export function UploadWizard() {
       body: JSON.stringify({ text }),
     });
     const data = await res.json();
+    console.log('Upload ID received:', data.upload_id);
     setUploadId(data.upload_id);
     setStep(2);
   };
@@ -29,18 +31,21 @@ export function UploadWizard() {
   const handleText = async () => {
     if (!typedText.trim()) return;
     setFileText(typedText);
+    console.log('Uploading typed text');
     const res = await apiFetch('/api/upload', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: typedText }),
     });
     const data = await res.json();
+    console.log('Upload ID received:', data.upload_id);
     setUploadId(data.upload_id);
     setStep(2);
   };
 
   const extractObjectives = async () => {
     try {
+      console.log('Requesting objectives for', title);
       const res = await apiFetch('/api/objectives/extract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,18 +56,22 @@ export function UploadWizard() {
         throw new Error(err.error ?? 'server_error');
       }
       const data = await res.json();
+      console.log('Objectives received:', data.objectives);
       setObjectives(data.objectives.map((o: Extracted) => o.text));
-    } catch {
+    } catch (err) {
+      console.error('Failed to load objectives', err);
       alert('Failed to load objectives');
     }
   };
 
   const saveCourse = async () => {
+    console.log('Saving course');
     await apiFetch('/api/courses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, uploadId }),
     });
+    console.log('Course saved');
     setStep(1);
     setFileText('');
     setTypedText('');

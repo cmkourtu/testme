@@ -50,6 +50,7 @@ export async function extractObjectives(
   course: string,
   text: string
 ): Promise<ExtractedObjective[]> {
+  console.log('Calling LLM for course', course);
   const body = {
     model: 'deepseek-chat',
     messages: [
@@ -60,7 +61,10 @@ export async function extractObjectives(
   };
 
   const res = await deepSeekChat(body);
+  console.log('LLM response received');
   const content = res.choices?.[0]?.message?.content ?? '[]';
-  return parseList(content);
+  const parsed = parseList(content);
+  console.log('Parsed', parsed.length, 'objectives');
+  return parsed;
 }
 
