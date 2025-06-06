@@ -40,24 +40,31 @@ export function ObjectivesPage() {
   };
 
   return (
-    <div>
-      <h2>Objective Extractor</h2>
+    <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow space-y-4">
+      <h2 className="text-xl font-semibold">Objective Extractor</h2>
       <input
+        className="w-full border rounded p-2"
         placeholder="Course Title"
         value={course}
         onChange={(e) => setCourse(e.target.value)}
         onKeyDown={handleKeyDown}
       />
       <textarea
+        className="w-full border rounded p-2 h-40"
         placeholder="Paste text here"
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <button onClick={extract} disabled={loading}>
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+        onClick={extract}
+        disabled={loading}
+      >
         {loading ? 'Loading...' : 'Extract'}
       </button>
       <textarea
+        className="w-full border rounded p-2 h-40"
         readOnly
         placeholder="Objectives will appear here"
         value={objectives.join('\n')}
