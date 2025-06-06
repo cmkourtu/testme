@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "dev": "pnpm seed && concurrently -n client,server -c green,cyan \"pnpm --filter client dev\" \"pnpm --filter server dev\"",
-    "lint": "eslint \"**/*.{ts,tsx}\" --max-warnings=0",
-    "test": "jest",
-    "coverage": "jest --coverage && node scripts/makeBadge.js",
+    "lint": "pnpm exec eslint \"**/*.{ts,tsx}\" --max-warnings=0",
+    "test": "pnpm exec jest",
+    "coverage": "pnpm exec jest --coverage && node scripts/makeBadge.js",
     "dev:test": "pnpm exec start-server-and-test 'pnpm dev' 'http://localhost:5173|http://localhost:3000/health' 'echo done'",
     "seed": "pnpm --filter server exec prisma db push && pnpm exec tsx server/prisma/seed.ts"
   },
