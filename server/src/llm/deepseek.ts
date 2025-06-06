@@ -10,7 +10,7 @@ const ds = axios.create({
     'Content-Type': 'application/json'
   },
   proxy: false,
-  timeout: 15000
+  timeout: 60000
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
