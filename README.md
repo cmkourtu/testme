@@ -13,6 +13,8 @@ It contains a React client, an Express API, and shared TypeScript utilities.
 
 Node 20 and pnpm 9 are required. Install dependencies at the repo root:
 
+Run `pnpm install` once after cloning to install workspace dependencies:
+
 ```bash
 pnpm install
 ```
