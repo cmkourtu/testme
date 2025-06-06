@@ -9,6 +9,13 @@ export function ObjectivesPage() {
   const [objectives, setObjectives] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      void extract();
+    }
+  };
+
   const extract = async () => {
     if (!text.trim() || !course.trim()) return;
     setLoading(true);
@@ -35,20 +42,20 @@ export function ObjectivesPage() {
         placeholder="Course Title"
         value={course}
         onChange={(e) => setCourse(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <textarea
         placeholder="Paste text here"
         value={text}
         onChange={(e) => setText(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <button onClick={extract} disabled={loading}>
         {loading ? 'Loading...' : 'Extract'}
       </button>
-      <ul>
-        {objectives.map((o, i) => (
-          <li key={i}>{o}</li>
-        ))}
-      </ul>
+      {!!objectives.length && (
+        <textarea readOnly value={objectives.join('\n')} />
+      )}
     </div>
   );
 }
