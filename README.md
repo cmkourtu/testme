@@ -86,7 +86,8 @@ shared package.
 
 - **Text Upload** – `POST /api/upload` saves raw text and returns an `upload_id`.
 - **Objective Extraction** – `POST /api/objectives/extract` sends text to the
-  DeepSeek LLM and returns a JSON list of objectives.
+  DeepSeek LLM and returns a JSON list of objectives along with a cluster
+  dependency graph.
 - **Course Creation** – `POST /api/courses` associates a title with an uploaded
   text file.
 - **Admin CRUD** – `/api/objectives` and `/api/items` expose basic management

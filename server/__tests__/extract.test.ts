@@ -12,7 +12,8 @@ beforeEach(() => {
 
 test('objective extractor returns objects', async () => {
   const text = await fs.readFile(samplePath, 'utf8');
-  nock('https://api.deepseek.com')
+  const llm = nock('https://api.deepseek.com');
+  llm
     .post('/v1/chat/completions')
     .reply(200, {
       choices: [
@@ -24,6 +25,10 @@ test('objective extractor returns objects', async () => {
           }
         }
       ]
+    })
+    .post('/v1/chat/completions')
+    .reply(200, {
+      choices: [{ message: { content: '{"Intro":[]}' } }]
     });
 
   const res = await request(app)
@@ -32,6 +37,7 @@ test('objective extractor returns objects', async () => {
 
   expect(res.status).toBe(200);
   expect(res.body.objectives[0].id).toBe('A-1');
+  expect(res.body.graph).toEqual({ Intro: [] });
 });
 
 
