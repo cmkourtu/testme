@@ -23,12 +23,13 @@ export function setGraph(g: DependencyGraph) {
 }
 
 function collectPrereqs(id: number, visited = new Set<number>()) {
+  if (visited.has(id)) {
+    return visited;
+  }
+  visited.add(id);
   const deps = graph[id] || [];
   for (const d of deps) {
-    if (!visited.has(d)) {
-      visited.add(d);
-      collectPrereqs(d, visited);
-    }
+    collectPrereqs(d, visited);
   }
   return visited;
 }
@@ -38,7 +39,8 @@ function collectPrereqs(id: number, visited = new Set<number>()) {
  */
 export async function canUnlock(userId: number, clusterId: number): Promise<boolean> {
   const prereqs = Array.from(collectPrereqs(clusterId));
-  for (const pre of prereqs) {
+  const required = prereqs.filter((id) => id !== clusterId);
+  for (const pre of required) {
     const state = await db.clusterState.findFirst({ where: { userId, clusterId: pre } });
     if (!state || !state.mastered) {
       return false;

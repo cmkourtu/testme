@@ -32,3 +32,13 @@ test('invalid JSON throws', async () => {
   mockChat.mockResolvedValue({ choices: [{ message: { content: 'bad' } }] });
   await expect(generateClusterGraph(objectives)).rejects.toThrow('invalid JSON');
 });
+
+test('parses graph with extra text', async () => {
+  mockChat.mockResolvedValue({
+    choices: [
+      { message: { content: 'Here it is:\n```json\n{"Intro":[]}\n``` done' } }
+    ]
+  });
+  const g = await generateClusterGraph(objectives);
+  expect(g.Intro).toEqual([]);
+});

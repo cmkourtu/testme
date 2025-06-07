@@ -25,3 +25,10 @@ test('POST /api/graph/generate validates input', async () => {
   const res = await request(app).post('/api/graph/generate').send({});
   expect(res.status).toBe(400);
 });
+
+test('POST /api/graph/generate validates objective shape', async () => {
+  const res = await request(app)
+    .post('/api/graph/generate')
+    .send({ objectives: [{ bad: true }] });
+  expect(res.status).toBe(400);
+});

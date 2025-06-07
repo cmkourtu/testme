@@ -8,8 +8,10 @@ export interface ClusterGraph {
 
 function parse(content: string): ClusterGraph {
   const trimmed = content.trim();
-  const match = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const json = match ? match[1].trim() : trimmed;
+  // allow the LLM to wrap JSON in markdown or add text before/after
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1] ?? trimmed;
+  const match = fenced.match(/\{[\s\S]*\}/);
+  const json = match ? match[0] : fenced;
   let obj: unknown;
   try {
     obj = JSON.parse(json);

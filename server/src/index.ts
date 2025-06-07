@@ -48,6 +48,17 @@ app.post('/api/graph/generate', async (req, res) => {
   if (!Array.isArray(objectives)) {
     return res.status(400).json({ error: 'objectives required' });
   }
+  if (
+    objectives.some(
+      (o) =>
+        !o ||
+        typeof o.id !== 'string' ||
+        typeof o.text !== 'string' ||
+        typeof o.cluster !== 'string'
+    )
+  ) {
+    return res.status(400).json({ error: 'invalid objectives' });
+  }
   try {
     const graph = await generateClusterGraph(objectives);
     res.json({ graph });

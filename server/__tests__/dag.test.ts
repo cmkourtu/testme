@@ -33,3 +33,10 @@ test('canUnlock returns false when a prerequisite is unmastered', async () => {
   expect(ok).toBe(false);
 });
 
+test('canUnlock handles circular dependencies', async () => {
+  setGraph({ 1: [2], 2: [1] });
+  findFirst.mockResolvedValue({ mastered: true });
+  const ok = await canUnlock(5, 1);
+  expect(ok).toBe(true);
+});
+
