@@ -55,7 +55,10 @@ app.post('/api/graph/generate', async (req, res) => {
         !o ||
         typeof o.id !== 'string' ||
         typeof o.text !== 'string' ||
-        typeof o.cluster !== 'string'
+        typeof o.cluster !== 'string' ||
+        !o.id.trim() ||
+        !o.text.trim() ||
+        !o.cluster.trim()
     )
   ) {
     return res.status(400).json({ error: 'invalid objectives' });
