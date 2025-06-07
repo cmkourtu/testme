@@ -4,6 +4,7 @@ import { Env } from './env';
 import { hello } from '../../shared/src';
 import { saveText } from './upload';
 import { extractObjectives } from './objectives';
+import { generateClusterGraph } from './llm/graphGenerator';
 import { adminRouter } from './admin';
 import { courseRouter } from "./courses";
 
@@ -36,6 +37,20 @@ app.post('/api/objectives/extract', async (req, res) => {
     const objectives = await extractObjectives(course, text);
     console.log('Objectives extracted:', objectives.length);
     res.json({ objectives });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'llm_error' });
+  }
+});
+
+app.post('/api/graph/generate', async (req, res) => {
+  const objectives = req.body.objectives;
+  if (!Array.isArray(objectives)) {
+    return res.status(400).json({ error: 'objectives required' });
+  }
+  try {
+    const graph = await generateClusterGraph(objectives);
+    res.json({ graph });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'llm_error' });
