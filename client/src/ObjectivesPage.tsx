@@ -3,9 +3,13 @@ import { apiFetch } from './api';
 import './chatgpt-theme.css';
 
 interface ExtractedObjective { 
+  id: string;
   text: string;
   cluster: string;
 }
+
+// Generate a unique ID for objectives
+const generateId = () => `obj-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 export function ObjectivesPage() {
   const [text, setText] = useState('');
@@ -36,6 +40,7 @@ export function ObjectivesPage() {
       const data = await res.json();
       console.log('Objectives received:', data.objectives);
       const newObjectives = data.objectives.map((o: any) => ({
+        id: o.id || generateId(),
         text: o.text,
         cluster: o.cluster || 'General'
       }));
@@ -66,19 +71,24 @@ export function ObjectivesPage() {
     setIsEditing(false);
   };
 
-  const updateObjective = (index: number, field: 'text' | 'cluster', value: string) => {
-    const updated = [...editedObjectives];
-    updated[index] = { ...updated[index], [field]: value };
+  const updateObjective = (id: string, field: 'text' | 'cluster', value: string) => {
+    const updated = editedObjectives.map(obj => 
+      obj.id === id ? { ...obj, [field]: value } : obj
+    );
     setEditedObjectives(updated);
   };
 
-  const deleteObjective = (index: number) => {
-    const updated = editedObjectives.filter((_, i) => i !== index);
+  const deleteObjective = (id: string) => {
+    const updated = editedObjectives.filter(obj => obj.id !== id);
     setEditedObjectives(updated);
   };
 
   const addObjective = () => {
-    setEditedObjectives([...editedObjectives, { text: '', cluster: 'General' }]);
+    setEditedObjectives([...editedObjectives, { 
+      id: generateId(),
+      text: '', 
+      cluster: 'General' 
+    }]);
   };
 
   // Group objectives by cluster
@@ -91,6 +101,12 @@ export function ObjectivesPage() {
       grouped[obj.cluster].push(obj);
     });
     return grouped;
+  };
+
+  // Get objective number by ID
+  const getObjectiveNumber = (id: string) => {
+    const index = displayObjectives.findIndex(obj => obj.id === id);
+    return index + 1;
   };
 
   const isDisabled = loading || !text.trim() || !course.trim();
@@ -154,13 +170,13 @@ export function ObjectivesPage() {
 
           <div className="builder-bottom-input">
             <div className="builder-input-wrapper">
-              <input
-                type="text"
-                className="builder-bottom-text"
+              <textarea
+                className="builder-bottom-textarea"
                 placeholder="What do you want to learn?"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={handleKeyDown}
+                rows={3}
               />
               <button 
                 className="builder-send-button" 
@@ -202,46 +218,43 @@ export function ObjectivesPage() {
             {objectives.length > 0 && (
               <div className="builder-objectives-container">
                 {Object.entries(groupedObjectives).map(([cluster, clusterObjectives]) => (
-                  <div key={cluster} className="builder-cluster-group">
+                  <div key={`cluster-${cluster}`} className="builder-cluster-group">
                     <h3 className="builder-cluster-title">{cluster}</h3>
                     <div className="builder-objectives-list">
-                      {clusterObjectives.map((obj, i) => {
-                        const globalIndex = displayObjectives.findIndex(o => o === obj);
-                        return (
-                          <div key={globalIndex} className="builder-objective">
-                            <div className="builder-objective-number">{globalIndex + 1}</div>
-                            {isEditing ? (
-                              <>
-                                <div className="builder-objective-edit-fields">
-                                  <input
-                                    className="builder-objective-input"
-                                    value={obj.text}
-                                    onChange={(e) => updateObjective(globalIndex, 'text', e.target.value)}
-                                    placeholder="Enter objective..."
-                                  />
-                                  <input
-                                    className="builder-cluster-input"
-                                    value={obj.cluster}
-                                    onChange={(e) => updateObjective(globalIndex, 'cluster', e.target.value)}
-                                    placeholder="Cluster name..."
-                                  />
-                                </div>
-                                <button
-                                  className="builder-delete-button"
-                                  onClick={() => deleteObjective(globalIndex)}
-                                  title="Delete objective"
-                                >
-                                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                  </svg>
-                                </button>
-                              </>
-                            ) : (
-                              <p className="builder-objective-text">{obj.text}</p>
-                            )}
-                          </div>
-                        );
-                      })}
+                      {clusterObjectives.map((obj) => (
+                        <div key={obj.id} className="builder-objective">
+                          <div className="builder-objective-number">{getObjectiveNumber(obj.id)}</div>
+                          {isEditing ? (
+                            <>
+                              <div className="builder-objective-edit-fields">
+                                <input
+                                  className="builder-objective-input"
+                                  value={obj.text}
+                                  onChange={(e) => updateObjective(obj.id, 'text', e.target.value)}
+                                  placeholder="Enter objective..."
+                                />
+                                <input
+                                  className="builder-cluster-input"
+                                  value={obj.cluster}
+                                  onChange={(e) => updateObjective(obj.id, 'cluster', e.target.value)}
+                                  placeholder="Cluster name..."
+                                />
+                              </div>
+                              <button
+                                className="builder-delete-button"
+                                onClick={() => deleteObjective(obj.id)}
+                                title="Delete objective"
+                              >
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </>
+                          ) : (
+                            <p className="builder-objective-text">{obj.text}</p>
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
