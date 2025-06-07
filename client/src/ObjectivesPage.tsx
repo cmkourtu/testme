@@ -9,6 +9,8 @@ export function ObjectivesPage() {
   const [course, setCourse] = useState('');
   const [objectives, setObjectives] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedObjectives, setEditedObjectives] = useState<string[]>([]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -30,7 +32,9 @@ export function ObjectivesPage() {
       if (!res.ok) throw new Error('server_error');
       const data = await res.json();
       console.log('Objectives received:', data.objectives);
-      setObjectives(data.objectives.map((o: Extracted) => o.text));
+      const newObjectives = data.objectives.map((o: Extracted) => o.text);
+      setObjectives(newObjectives);
+      setEditedObjectives(newObjectives);
       setText(''); // Clear input after successful extraction
     } catch (err) {
       console.error('Failed to load objectives', err);
@@ -39,6 +43,36 @@ export function ObjectivesPage() {
       setLoading(false);
       console.log('Request complete');
     }
+  };
+
+  const startEditing = () => {
+    setIsEditing(true);
+    setEditedObjectives([...objectives]);
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    setEditedObjectives([...objectives]);
+  };
+
+  const saveEdits = () => {
+    setObjectives([...editedObjectives]);
+    setIsEditing(false);
+  };
+
+  const updateObjective = (index: number, value: string) => {
+    const updated = [...editedObjectives];
+    updated[index] = value;
+    setEditedObjectives(updated);
+  };
+
+  const deleteObjective = (index: number) => {
+    const updated = editedObjectives.filter((_, i) => i !== index);
+    setEditedObjectives(updated);
+  };
+
+  const addObjective = () => {
+    setEditedObjectives([...editedObjectives, '']);
   };
 
   const isDisabled = loading || !text.trim() || !course.trim();
@@ -148,16 +182,68 @@ export function ObjectivesPage() {
             {objectives.length > 0 && (
               <div className="builder-objectives-container">
                 <div className="builder-objectives-list">
-                  {objectives.map((obj, i) => (
+                  {(isEditing ? editedObjectives : objectives).map((obj, i) => (
                     <div key={i} className="builder-objective">
                       <div className="builder-objective-number">{i + 1}</div>
-                      <p className="builder-objective-text">{obj}</p>
+                      {isEditing ? (
+                        <>
+                          <input
+                            className="builder-objective-input"
+                            value={obj}
+                            onChange={(e) => updateObjective(i, e.target.value)}
+                            placeholder="Enter objective..."
+                          />
+                          <button
+                            className="builder-delete-button"
+                            onClick={() => deleteObjective(i)}
+                            title="Delete objective"
+                          >
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </>
+                      ) : (
+                        <p className="builder-objective-text">{obj}</p>
+                      )}
                     </div>
                   ))}
+                  {isEditing && (
+                    <button className="builder-add-objective" onClick={addObjective}>
+                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span>Add objective</span>
+                    </button>
+                  )}
                 </div>
               </div>
             )}
           </div>
+
+          {/* Edit Button */}
+          {objectives.length > 0 && (
+            <div className="builder-edit-controls">
+              {!isEditing ? (
+                <button className="builder-edit-button" onClick={startEditing}>
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Edit</span>
+                </button>
+              ) : (
+                <>
+                  <button className="builder-cancel-button" onClick={cancelEditing}>
+                    Cancel
+                  </button>
+                  <button className="builder-save-button" onClick={saveEdits}>
+                    Save
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
