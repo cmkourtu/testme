@@ -8,6 +8,7 @@ export function ObjectivesPage() {
   const [text, setText] = useState('');
   const [course, setCourse] = useState('');
   const [objectives, setObjectives] = useState<string[]>([]);
+  const [graph, setGraph] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -31,6 +32,7 @@ export function ObjectivesPage() {
       const data = await res.json();
       console.log('Objectives received:', data.objectives);
       setObjectives(data.objectives.map((o: Extracted) => o.text));
+      setGraph(data.graph ?? {});
       setText(''); // Clear input after successful extraction
     } catch (err) {
       console.error('Failed to load objectives', err);
@@ -155,6 +157,18 @@ export function ObjectivesPage() {
                     </div>
                   ))}
                 </div>
+                {Object.keys(graph).length > 0 && (
+                  <div className="builder-graph">
+                    <h3>Dependency Diagram</h3>
+                    <ul>
+                      {Object.entries(graph).map(([cluster, deps]) => (
+                        <li key={cluster}>
+                          {cluster}: {deps.length ? deps.join(', ') : 'none'}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </div>
