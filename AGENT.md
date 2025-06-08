@@ -40,6 +40,8 @@
 5. Any new script or route should include a brief description in comments explaining its role in the Scheduler/Gatekeeper workflow.
 6. Commit messages should be concise ("feat: add objective extractor" or "fix: update lint config").
 7. The backlog may be outdated. Do not assume it reflects the current state. After closing a ticket mentioned in `docs/backlog-roadmap.md`, update that file accordingly.
+8. Make sure you test the guidelines from the .prettier
+
 
 ## Testing Checklist
 
