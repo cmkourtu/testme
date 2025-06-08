@@ -15,6 +15,8 @@ interface ApiObjective {
   cluster?: string;
 }
 
+type ViewMode = 'objectives' | 'dependencies';
+
 // Generate a unique ID for objectives
 const generateId = () => `obj-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
@@ -26,6 +28,7 @@ export function ObjectivesPage() {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedObjectives, setEditedObjectives] = useState<ExtractedObjective[]>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>('objectives');
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -217,7 +220,30 @@ export function ObjectivesPage() {
 
         {/* Right Panel - Objectives by Cluster */}
         <div className="builder-right-panel">
-          <div className="builder-preview-header">Objectives by Cluster</div>
+          <div className="builder-preview-header">
+            {objectives.length > 0 && (
+              <div className="builder-view-toggle">
+                <button 
+                  className={`builder-view-option ${viewMode === 'objectives' ? 'active' : ''}`}
+                  onClick={() => setViewMode('objectives')}
+                >
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                  </svg>
+                  Objectives
+                </button>
+                <button 
+                  className={`builder-view-option ${viewMode === 'dependencies' ? 'active' : ''}`}
+                  onClick={() => setViewMode('dependencies')}
+                >
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zM13 19v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2h2a2 2 0 002-2zM21 19v-8a2 2 0 00-2-2h-2a2 2 0 00-2 2v8a2 2 0 002 2h2a2 2 0 002-2z" />
+                  </svg>
+                  Dependency Diagram
+                </button>
+              </div>
+            )}
+          </div>
 
           <div className="builder-preview-content">
             {objectives.length === 0 && !loading && (
@@ -243,7 +269,7 @@ export function ObjectivesPage() {
               </div>
             )}
 
-            {objectives.length > 0 && (
+            {objectives.length > 0 && viewMode === 'objectives' && (
               <div className="builder-objectives-container">
                 {Object.entries(groupedObjectives).map(([cluster, clusterObjectives]) => (
                   <div key={`cluster-${cluster}`} className="builder-cluster-group">
@@ -314,24 +340,170 @@ export function ObjectivesPage() {
                     <span>Add objective</span>
                   </button>
                 )}
-                {Object.keys(graph).length > 0 && (
-                  <div className="builder-graph">
-                    <h3>Dependency Diagram</h3>
-                    <ul>
-                      {Object.entries(graph).map(([cluster, deps]) => (
-                        <li key={cluster}>
-                          {cluster}: {deps.length ? deps.join(', ') : 'none'}
-                        </li>
-                      ))}
-                    </ul>
+              </div>
+            )}
+
+            {objectives.length > 0 && viewMode === 'dependencies' && (
+              <div className="builder-dependency-graph">
+                <svg className="dependency-diagram" viewBox="0 0 800 600">
+                  {/* Calculate positions for nodes in hierarchical layout */}
+                  {(() => {
+                    const clusters = Object.keys(graph);
+                    const positions: { [key: string]: { x: number; y: number } } = {};
+                    
+                    // Create levels based on dependencies
+                    const levels: string[][] = [];
+                    const visited = new Set<string>();
+                    const inDegree: { [key: string]: number } = {};
+                    
+                    // Initialize in-degree counts
+                    clusters.forEach(cluster => {
+                      inDegree[cluster] = 0;
+                    });
+                    
+                    // Count incoming edges
+                    Object.entries(graph).forEach(([from, deps]) => {
+                      deps.forEach(to => {
+                        if (inDegree[to] !== undefined) {
+                          inDegree[to]++;
+                        }
+                      });
+                    });
+                    
+                    // Find nodes with no incoming edges (roots)
+                    let currentLevel = clusters.filter(c => inDegree[c] === 0);
+                    
+                    while (currentLevel.length > 0) {
+                      levels.push([...currentLevel]);
+                      currentLevel.forEach(node => visited.add(node));
+                      
+                      const nextLevel: string[] = [];
+                      currentLevel.forEach(node => {
+                        (graph[node] || []).forEach(dep => {
+                          if (!visited.has(dep) && !nextLevel.includes(dep)) {
+                            nextLevel.push(dep);
+                          }
+                        });
+                      });
+                      currentLevel = nextLevel;
+                    }
+                    
+                    // Add any remaining nodes
+                    clusters.forEach(cluster => {
+                      if (!visited.has(cluster)) {
+                        levels.push([cluster]);
+                      }
+                    });
+                    
+                    // Calculate positions
+                    const levelHeight = 500 / (levels.length + 1);
+                    levels.forEach((level, levelIndex) => {
+                      const levelWidth = 700 / (level.length + 1);
+                      level.forEach((cluster, clusterIndex) => {
+                        positions[cluster] = {
+                          x: levelWidth * (clusterIndex + 1) + 50,
+                          y: levelHeight * (levelIndex + 1) + 50
+                        };
+                      });
+                    });
+
+                    return (
+                      <>
+                        <defs>
+                          <marker
+                            id="arrowhead"
+                            viewBox="0 0 10 10"
+                            refX="10"
+                            refY="5"
+                            markerWidth="8"
+                            markerHeight="8"
+                            orient="auto"
+                          >
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10a37f" />
+                          </marker>
+                        </defs>
+                        
+                        {/* Draw dependency arrows */}
+                        {Object.entries(graph).map(([from, dependencies]) => 
+                          dependencies.map((to) => {
+                            const fromPos = positions[from];
+                            const toPos = positions[to];
+                            if (fromPos && toPos) {
+                              // Reverse the arrow direction: from prerequisite TO dependent
+                              const dx = fromPos.x - toPos.x;  // Swapped
+                              const dy = fromPos.y - toPos.y;  // Swapped
+                              const distance = Math.sqrt(dx * dx + dy * dy);
+                              const unitX = dx / distance;
+                              const unitY = dy / distance;
+                              
+                              // Start from prerequisite (to) and end at dependent (from)
+                              const startX = toPos.x + unitX * 50;   // Start from 'to'
+                              const startY = toPos.y + unitY * 50;   // Start from 'to'
+                              const endX = fromPos.x - unitX * 50;   // End at 'from'
+                              const endY = fromPos.y - unitY * 50;   // End at 'from'
+                              
+                              return (
+                                <line
+                                  key={`${from}-${to}`}
+                                  x1={startX}
+                                  y1={startY}
+                                  x2={endX}
+                                  y2={endY}
+                                  className="dependency-arrow"
+                                  markerEnd="url(#arrowhead)"
+                                />
+                              );
+                            }
+                            return null;
+                          })
+                        )}
+
+                        {/* Draw cluster nodes */}
+                        {clusters.map((cluster) => {
+                          const pos = positions[cluster];
+                          const hasOutgoing = (graph[cluster] || []).length > 0;
+                          const hasIncoming = Object.values(graph).some(deps => deps.includes(cluster));
+                          
+                          return (
+                            <g key={`node-${cluster}`}>
+                              <circle
+                                cx={pos.x}
+                                cy={pos.y}
+                                r="50"
+                                className={`dependency-node ${hasOutgoing ? 'has-outgoing' : ''} ${hasIncoming ? 'has-incoming' : ''}`}
+                              />
+                              <text x={pos.x} y={pos.y} className="dependency-label">
+                                {cluster}
+                              </text>
+                            </g>
+                          );
+                        })}
+                      </>
+                    );
+                  })()}
+                </svg>
+
+                {/* Legend */}
+                <div className="dependency-legend">
+                  <h4>Learning Flow</h4>
+                  <p>Arrows show the progression from prerequisites to dependent topics</p>
+                  <div className="legend-items">
+                    <div className="legend-item">
+                      <div className="legend-color has-outgoing"></div>
+                      <span>Requires prerequisites</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color has-incoming"></div>
+                      <span>Is a prerequisite</span>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             )}
           </div>
 
-          {/* Edit Button */}
-          {objectives.length > 0 && (
+          {/* Edit Button - only show in objectives view */}
+          {objectives.length > 0 && viewMode === 'objectives' && (
             <div className="builder-edit-controls">
               {!isEditing ? (
                 <button className="builder-edit-button" onClick={startEditing}>
