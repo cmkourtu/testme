@@ -2,7 +2,7 @@ import { extractObjectives } from '../src/objectives';
 import { deepSeekChat } from '../src/llm/deepseek';
 
 jest.mock('../src/llm/deepseek', () => ({
-  deepSeekChat: jest.fn()
+  deepSeekChat: jest.fn(),
 }));
 
 const mockChat = deepSeekChat as jest.Mock;

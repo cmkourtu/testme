@@ -18,6 +18,8 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - name: Install
         run: pnpm install
+      - name: Prettier
+        run: pnpm format:check
       - name: Lint
         run: pnpm lint
       - name: Dev

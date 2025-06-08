@@ -7,16 +7,15 @@ jest.mock('../../shared/db', () => ({
     objective: {
       findMany: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn()
+      delete: jest.fn(),
     },
     item: {
       findMany: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn()
-    }
-  }
+      delete: jest.fn(),
+    },
+  },
 }));
-
 
 test('GET /api/objectives returns list', async () => {
   (db.objective.findMany as jest.Mock).mockResolvedValue([{ id: 1 }]);
@@ -37,7 +36,6 @@ test('DELETE /api/objectives/:id returns 204', async () => {
   const res = await request(app).delete('/api/objectives/1');
   expect(res.status).toBe(204);
 });
-
 
 test('PUT /api/objectives/:id handles missing objective', async () => {
   (db.objective.update as jest.Mock).mockRejectedValue(new Error('not found'));

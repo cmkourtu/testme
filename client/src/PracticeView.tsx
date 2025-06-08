@@ -34,10 +34,7 @@ export function PracticeView() {
   return (
     <div>
       <h2>{item.stem}</h2>
-      <textarea
-        value={answer}
-        onChange={(e) => setAnswer(e.target.value)}
-      />
+      <textarea value={answer} onChange={(e) => setAnswer(e.target.value)} />
       <button onClick={handleSubmit}>Submit</button>
       {toast && <div role="alert">{toast}</div>}
     </div>

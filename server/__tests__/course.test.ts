@@ -7,7 +7,11 @@ jest.mock('../../shared/db', () => ({
 }));
 
 test('POST /api/courses creates course', async () => {
-  (course.create as jest.Mock).mockResolvedValue({ id: 1, title: 'Demo', uploadId: 'u1' });
+  (course.create as jest.Mock).mockResolvedValue({
+    id: 1,
+    title: 'Demo',
+    uploadId: 'u1',
+  });
   const res = await request(app)
     .post('/api/courses')
     .send({ title: 'Demo', uploadId: 'u1' });

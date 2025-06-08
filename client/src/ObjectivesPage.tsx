@@ -223,21 +223,43 @@ export function ObjectivesPage() {
           <div className="builder-preview-header">
             {objectives.length > 0 && (
               <div className="builder-view-toggle">
-                <button 
+                <button
                   className={`builder-view-option ${viewMode === 'objectives' ? 'active' : ''}`}
                   onClick={() => setViewMode('objectives')}
                 >
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                    />
                   </svg>
                   Objectives
                 </button>
-                <button 
+                <button
                   className={`builder-view-option ${viewMode === 'dependencies' ? 'active' : ''}`}
                   onClick={() => setViewMode('dependencies')}
                 >
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zM13 19v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2h2a2 2 0 002-2zM21 19v-8a2 2 0 00-2-2h-2a2 2 0 00-2 2v8a2 2 0 002 2h2a2 2 0 002-2z" />
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zM13 19v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2h2a2 2 0 002-2zM21 19v-8a2 2 0 00-2-2h-2a2 2 0 00-2 2v8a2 2 0 002 2h2a2 2 0 002-2z"
+                    />
                   </svg>
                   Dependency Diagram
                 </button>
@@ -349,37 +371,37 @@ export function ObjectivesPage() {
                 {(() => {
                   const clusters = Object.keys(graph);
                   const positions: { [key: string]: { x: number; y: number } } = {};
-                  const nodeRadius = 40;  // Reduced from 50
-                  
+                  const nodeRadius = 40; // Reduced from 50
+
                   // Create levels based on dependencies
                   const levels: string[][] = [];
                   const visited = new Set<string>();
                   const inDegree: { [key: string]: number } = {};
-                  
+
                   // Initialize in-degree counts
-                  clusters.forEach(cluster => {
+                  clusters.forEach((cluster) => {
                     inDegree[cluster] = 0;
                   });
-                  
+
                   // Count incoming edges
                   Object.entries(graph).forEach(([, deps]) => {
-                    deps.forEach(to => {
+                    deps.forEach((to) => {
                       if (inDegree[to] !== undefined) {
                         inDegree[to]++;
                       }
                     });
                   });
-                  
+
                   // Find nodes with no incoming edges (roots)
-                  let currentLevel = clusters.filter(c => inDegree[c] === 0);
-                  
+                  let currentLevel = clusters.filter((c) => inDegree[c] === 0);
+
                   while (currentLevel.length > 0) {
                     levels.push([...currentLevel]);
-                    currentLevel.forEach(node => visited.add(node));
-                    
+                    currentLevel.forEach((node) => visited.add(node));
+
                     const nextLevel: string[] = [];
-                    currentLevel.forEach(node => {
-                      (graph[node] || []).forEach(dep => {
+                    currentLevel.forEach((node) => {
+                      (graph[node] || []).forEach((dep) => {
                         if (!visited.has(dep) && !nextLevel.includes(dep)) {
                           nextLevel.push(dep);
                         }
@@ -387,47 +409,48 @@ export function ObjectivesPage() {
                     });
                     currentLevel = nextLevel;
                   }
-                  
+
                   // Add any remaining nodes
-                  clusters.forEach(cluster => {
+                  clusters.forEach((cluster) => {
                     if (!visited.has(cluster)) {
                       levels.push([cluster]);
                     }
                   });
-                  
+
                   // Calculate positions
-                  const maxNodesPerRow = 4;  // Limit nodes per row for better spacing
-                  const levelHeight = 120;   // Fixed height between levels
-                  const nodeSpacing = 200;   // Fixed horizontal spacing between nodes
-                  const verticalOffset = 80;  
-                  
+                  const maxNodesPerRow = 4; // Limit nodes per row for better spacing
+                  const levelHeight = 120; // Fixed height between levels
+                  const nodeSpacing = 200; // Fixed horizontal spacing between nodes
+                  const verticalOffset = 80;
+
                   levels.forEach((level, levelIndex) => {
                     // Split level into rows if too many nodes
                     const rows = [];
                     for (let i = 0; i < level.length; i += maxNodesPerRow) {
                       rows.push(level.slice(i, i + maxNodesPerRow));
                     }
-                    
+
                     rows.forEach((row, rowIndex) => {
                       const rowWidth = (row.length - 1) * nodeSpacing;
-                      const startX = (1000 - rowWidth) / 2;  // Center the row
-                      
+                      const startX = (1000 - rowWidth) / 2; // Center the row
+
                       row.forEach((cluster, clusterIndex) => {
                         positions[cluster] = {
-                          x: startX + (clusterIndex * nodeSpacing),
-                          y: verticalOffset + (levelIndex * levelHeight) + (rowIndex * 80)
+                          x: startX + clusterIndex * nodeSpacing,
+                          y: verticalOffset + levelIndex * levelHeight + rowIndex * 80,
                         };
                       });
                     });
                   });
 
                   // Calculate the actual height needed
-                  const maxY = Math.max(...Object.values(positions).map(p => p.y)) + 100;
+                  const maxY =
+                    Math.max(...Object.values(positions).map((p) => p.y)) + 100;
                   const svgHeight = Math.max(700, maxY);
 
                   return (
-                    <svg 
-                      className="dependency-diagram" 
+                    <svg
+                      className="dependency-diagram"
                       viewBox={`0 0 1000 ${svgHeight}`}
                       style={{ aspectRatio: `1000/${svgHeight}` }}
                     >
@@ -444,26 +467,26 @@ export function ObjectivesPage() {
                           <path d="M 0 0 L 10 5 L 0 10 z" fill="#10a37f" />
                         </marker>
                       </defs>
-                      
+
                       {/* Draw dependency arrows */}
-                      {Object.entries(graph).map(([from, dependencies]) => 
+                      {Object.entries(graph).map(([from, dependencies]) =>
                         dependencies.map((to) => {
                           const fromPos = positions[from];
                           const toPos = positions[to];
                           if (fromPos && toPos) {
                             // Reverse the arrow direction: from prerequisite TO dependent
-                            const dx = fromPos.x - toPos.x;  
-                            const dy = fromPos.y - toPos.y;  
+                            const dx = fromPos.x - toPos.x;
+                            const dy = fromPos.y - toPos.y;
                             const distance = Math.sqrt(dx * dx + dy * dy);
                             const unitX = dx / distance;
                             const unitY = dy / distance;
-                            
+
                             // Start from prerequisite (to) and end at dependent (from)
-                            const startX = toPos.x + unitX * nodeRadius;   
-                            const startY = toPos.y + unitY * nodeRadius;   
-                            const endX = fromPos.x - unitX * nodeRadius;   
-                            const endY = fromPos.y - unitY * nodeRadius;   
-                            
+                            const startX = toPos.x + unitX * nodeRadius;
+                            const startY = toPos.y + unitY * nodeRadius;
+                            const endX = fromPos.x - unitX * nodeRadius;
+                            const endY = fromPos.y - unitY * nodeRadius;
+
                             return (
                               <line
                                 key={`${from}-${to}`}
@@ -477,15 +500,17 @@ export function ObjectivesPage() {
                             );
                           }
                           return null;
-                        })
+                        }),
                       )}
 
                       {/* Draw cluster nodes */}
                       {clusters.map((cluster) => {
                         const pos = positions[cluster];
                         const hasOutgoing = (graph[cluster] || []).length > 0;
-                        const hasIncoming = Object.values(graph).some(deps => deps.includes(cluster));
-                        
+                        const hasIncoming = Object.values(graph).some((deps) =>
+                          deps.includes(cluster),
+                        );
+
                         return (
                           <g key={`node-${cluster}`}>
                             <circle
@@ -507,7 +532,9 @@ export function ObjectivesPage() {
                 {/* Legend */}
                 <div className="dependency-legend">
                   <h4>Learning Flow</h4>
-                  <p>Arrows show the progression from prerequisites to dependent topics</p>
+                  <p>
+                    Arrows show the progression from prerequisites to dependent topics
+                  </p>
                   <div className="legend-items">
                     <div className="legend-item">
                       <div className="legend-color has-outgoing"></div>

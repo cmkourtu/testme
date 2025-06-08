@@ -2,7 +2,7 @@ import { extractObjectives, ExtractedObjective } from '../src/objectives';
 import { deepSeekChat } from '../src/llm/deepseek';
 
 jest.mock('../src/llm/deepseek', () => ({
-  deepSeekChat: jest.fn()
+  deepSeekChat: jest.fn(),
 }));
 
 const mockChat = deepSeekChat as jest.Mock;
@@ -16,12 +16,10 @@ test('parses objects from code block', async () => {
     id: 'A-1',
     text: 'Define demo',
     bloom: 'Remember',
-    cluster: 'Intro'
+    cluster: 'Intro',
   };
   mockChat.mockResolvedValue({
-    choices: [
-      { message: { content: '```json\n[' + JSON.stringify(obj) + ']\n```' } }
-    ]
+    choices: [{ message: { content: '```json\n[' + JSON.stringify(obj) + ']\n```' } }],
   });
   const list = await extractObjectives('Demo', 'text');
   expect(list).toEqual([obj]);
@@ -29,8 +27,8 @@ test('parses objects from code block', async () => {
     expect.objectContaining({
       messages: [
         { role: 'system', content: expect.any(String) },
-        { role: 'user', content: expect.stringContaining('Course: Demo') }
-      ]
-    })
+        { role: 'user', content: expect.stringContaining('Course: Demo') },
+      ],
+    }),
   );
 });

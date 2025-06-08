@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 
 beforeAll(() => {
   execSync('pnpm --filter server exec prisma db push --skip-generate', {
-    stdio: 'inherit'
+    stdio: 'inherit',
   });
 });
 

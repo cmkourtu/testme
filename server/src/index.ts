@@ -6,14 +6,14 @@ import { saveText } from './upload';
 import { extractObjectives } from './objectives';
 import { generateClusterGraph } from './llm/graphGenerator';
 import { adminRouter } from './admin';
-import { courseRouter } from "./courses";
+import { courseRouter } from './courses';
 
 // Express server exposing health check and upload route.
 export const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api', adminRouter);
-app.use("/api/courses", courseRouter);
+app.use('/api/courses', courseRouter);
 
 app.post('/api/upload', async (req, res) => {
   const text = req.body.text;
@@ -60,7 +60,7 @@ app.post('/api/graph/generate', async (req, res) => {
         !o.id.trim() ||
         !o.text.trim() ||
         !o.bloom.trim() ||
-        !o.cluster.trim()
+        !o.cluster.trim(),
     )
   ) {
     return res.status(400).json({ error: 'invalid objectives' });

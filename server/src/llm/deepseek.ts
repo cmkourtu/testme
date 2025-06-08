@@ -7,10 +7,10 @@ const ds = axios.create({
   baseURL: 'https://api.deepseek.com',
   headers: {
     Authorization: `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
   proxy: false,
-  timeout: 60000
+  timeout: 60000,
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -2,7 +2,7 @@ import { gradeFreeResponse } from '../src/llm/grader';
 import { deepSeekChat } from '../src/llm/deepseek';
 
 jest.mock('../src/llm/deepseek', () => ({
-  deepSeekChat: jest.fn()
+  deepSeekChat: jest.fn(),
 }));
 
 const mockChat = deepSeekChat as jest.Mock;
@@ -13,9 +13,15 @@ beforeEach(() => {
 
 test('majority vote returns final verdict', async () => {
   mockChat
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"correct"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"incorrect"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"correct"}' } }] });
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"correct"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"incorrect"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"correct"}' } }],
+    });
 
   const res = await gradeFreeResponse('Q', 'A');
   expect(res.verdict).toBe('correct');
@@ -26,9 +32,15 @@ test('majority vote returns final verdict', async () => {
 
 test('unsure triggers escalate', async () => {
   mockChat
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"partial"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"unsure"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"incorrect"}' } }] });
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"partial"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"unsure"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"incorrect"}' } }],
+    });
 
   const res = await gradeFreeResponse('Q', 'A');
   expect(res.verdict).toBe('escalate');
@@ -37,9 +49,15 @@ test('unsure triggers escalate', async () => {
 
 test('majority partial returns score 0.6', async () => {
   mockChat
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"partial"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"partial"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"incorrect"}' } }] });
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"partial"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"partial"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"incorrect"}' } }],
+    });
 
   const res = await gradeFreeResponse('Q', 'A');
   expect(res.verdict).toBe('partial');
@@ -49,9 +67,15 @@ test('majority partial returns score 0.6', async () => {
 
 test('all different verdicts escalate', async () => {
   mockChat
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"correct"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"partial"}' } }] })
-    .mockResolvedValueOnce({ choices: [{ message: { content: '{"verdict":"incorrect"}' } }] });
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"correct"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"partial"}' } }],
+    })
+    .mockResolvedValueOnce({
+      choices: [{ message: { content: '{"verdict":"incorrect"}' } }],
+    });
 
   const res = await gradeFreeResponse('Q', 'A');
   expect(res.verdict).toBe('escalate');

@@ -3,7 +3,9 @@ import { apiFetch } from './api';
 
 export function UploadWizard() {
   const [step, setStep] = useState(1);
-  interface Extracted { text: string }
+  interface Extracted {
+    text: string;
+  }
 
   const [fileText, setFileText] = useState('');
   const [typedText, setTypedText] = useState('');

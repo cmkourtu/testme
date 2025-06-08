@@ -23,4 +23,3 @@ const svg = makeBadge({ label: 'coverage', message: `${pct}%`, color: getColor(p
 fs.mkdirSync('./coverage', { recursive: true });
 fs.writeFileSync('./coverage/badge.svg', svg);
 console.log('Coverage badge generated at coverage/badge.svg');
-

@@ -28,11 +28,11 @@ export async function generateItem(params: {
           params.bloom,
           params.tier,
           params.context,
-          params.previous
-        )
-      }
+          params.previous,
+        ),
+      },
     ],
-    temperature: 0.7
+    temperature: 0.7,
   };
 
   const res = await deepSeekChat(body);
@@ -52,14 +52,14 @@ export async function generateItem(params: {
     reference: String(o.reference || ''),
     bloom: String(o.bloom || ''),
     tier: Number(o.tier || 0),
-    explanation: String(o.explanation || '')
+    explanation: String(o.explanation || ''),
   };
 }
 
 export async function generateTieredItems(
   objective: string,
   context: string,
-  blooms: string[]
+  blooms: string[],
 ): Promise<GeneratedItem[]> {
   const tiers = [1, 3, 5];
   const prior: string[] = [];
@@ -70,7 +70,7 @@ export async function generateTieredItems(
       bloom: blooms[i] || blooms[0],
       tier: tiers[i],
       context,
-      previous: prior
+      previous: prior,
     });
     prior.push(item.stem);
     items.push(item);
