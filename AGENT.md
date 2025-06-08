@@ -40,15 +40,15 @@
 5. Any new script or route should include a brief description in comments explaining its role in the Scheduler/Gatekeeper workflow.
 6. Commit messages should be concise ("feat: add objective extractor" or "fix: update lint config").
 7. The backlog may be outdated. Do not assume it reflects the current state. After closing a ticket mentioned in `docs/backlog-roadmap.md`, update that file accordingly.
-8. Make sure you test the guidelines from the .prettier
-
+8. Run `pnpm format` before committing or opening a PR to ensure all files conform to the Prettier configuration.
 
 ## Testing Checklist
 
 Before opening a PR:
 
-1. Run `pnpm lint` and ensure there are no warnings.
-2. Run `pnpm test` and ensure all tests pass.
-3. If database changes were made, run `pnpm seed` to verify migrations succeed.
+1. Run `pnpm format` and ensure no files change after running.
+2. Run `pnpm lint` and ensure there are no warnings.
+3. Run `pnpm test` and ensure all tests pass.
+4. If database changes were made, run `pnpm seed` to verify migrations succeed.
 
 Following these guidelines will keep the codebase consistent and ensure the adaptive tutor engine works as designed.
