@@ -36,7 +36,8 @@ app.post('/api/objectives/extract', async (req, res) => {
     console.log('Extracting objectives for', course);
     const objectives = await extractObjectives(course, text);
     console.log('Objectives extracted:', objectives.length);
-    res.json({ objectives });
+    const graph = await generateClusterGraph(objectives);
+    res.json({ objectives, graph });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'llm_error' });
@@ -54,7 +55,12 @@ app.post('/api/graph/generate', async (req, res) => {
         !o ||
         typeof o.id !== 'string' ||
         typeof o.text !== 'string' ||
-        typeof o.cluster !== 'string'
+        typeof o.bloom !== 'string' ||
+        typeof o.cluster !== 'string' ||
+        !o.id.trim() ||
+        !o.text.trim() ||
+        !o.bloom.trim() ||
+        !o.cluster.trim()
     )
   ) {
     return res.status(400).json({ error: 'invalid objectives' });

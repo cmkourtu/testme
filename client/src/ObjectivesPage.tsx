@@ -2,10 +2,17 @@ import React, { useState } from 'react';
 import { apiFetch } from './api';
 import './chatgpt-theme.css';
 
-interface ExtractedObjective { 
+interface ExtractedObjective {
   id: string;
   text: string;
   cluster: string;
+}
+
+// Shape returned from the API. Fields may be missing so they are optional.
+interface ApiObjective {
+  id?: string;
+  text: string;
+  cluster?: string;
 }
 
 // Generate a unique ID for objectives
@@ -15,6 +22,7 @@ export function ObjectivesPage() {
   const [text, setText] = useState('');
   const [course, setCourse] = useState('');
   const [objectives, setObjectives] = useState<ExtractedObjective[]>([]);
+  const [graph, setGraph] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedObjectives, setEditedObjectives] = useState<ExtractedObjective[]>([]);
@@ -39,13 +47,14 @@ export function ObjectivesPage() {
       if (!res.ok) throw new Error('server_error');
       const data = await res.json();
       console.log('Objectives received:', data.objectives);
-      const newObjectives = data.objectives.map((o: any) => ({
+      const newObjectives = data.objectives.map((o: ApiObjective) => ({
         id: o.id || generateId(),
         text: o.text,
-        cluster: o.cluster || 'General'
+        cluster: o.cluster || 'General',
       }));
       setObjectives(newObjectives);
       setEditedObjectives(newObjectives);
+      setGraph(data.graph ?? {});
       setText(''); // Clear input after successful extraction
     } catch (err) {
       console.error('Failed to load objectives', err);
@@ -72,29 +81,32 @@ export function ObjectivesPage() {
   };
 
   const updateObjective = (id: string, field: 'text' | 'cluster', value: string) => {
-    const updated = editedObjectives.map(obj => 
-      obj.id === id ? { ...obj, [field]: value } : obj
+    const updated = editedObjectives.map((obj) =>
+      obj.id === id ? { ...obj, [field]: value } : obj,
     );
     setEditedObjectives(updated);
   };
 
   const deleteObjective = (id: string) => {
-    const updated = editedObjectives.filter(obj => obj.id !== id);
+    const updated = editedObjectives.filter((obj) => obj.id !== id);
     setEditedObjectives(updated);
   };
 
   const addObjective = () => {
-    setEditedObjectives([...editedObjectives, { 
-      id: generateId(),
-      text: '', 
-      cluster: 'General' 
-    }]);
+    setEditedObjectives([
+      ...editedObjectives,
+      {
+        id: generateId(),
+        text: '',
+        cluster: 'General',
+      },
+    ]);
   };
 
   // Group objectives by cluster
   const groupObjectivesByCluster = (objs: ExtractedObjective[]) => {
     const grouped: { [cluster: string]: ExtractedObjective[] } = {};
-    objs.forEach(obj => {
+    objs.forEach((obj) => {
       if (!grouped[obj.cluster]) {
         grouped[obj.cluster] = [];
       }
@@ -105,7 +117,7 @@ export function ObjectivesPage() {
 
   // Get objective number by ID
   const getObjectiveNumber = (id: string) => {
-    const index = displayObjectives.findIndex(obj => obj.id === id);
+    const index = displayObjectives.findIndex((obj) => obj.id === id);
     return index + 1;
   };
 
@@ -120,7 +132,12 @@ export function ObjectivesPage() {
         <div className="builder-title-section">
           <button className="builder-back-button">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <div>
@@ -144,12 +161,13 @@ export function ObjectivesPage() {
 
           <div className="builder-input-section">
             <p className="builder-helper-text">
-              Hi! I'll help you extract learning objectives from your course material. 
-              First, enter your course title below, then paste your course content in the bottom input.
+              Hi! I'll help you extract learning objectives from your course material.
+              First, enter your course title below, then paste your course content in the
+              bottom input.
             </p>
-            
+
             <p className="builder-question">What's the name of your course?</p>
-            
+
             <div className="builder-input-area">
               <input
                 className="builder-input"
@@ -157,11 +175,12 @@ export function ObjectivesPage() {
                 value={course}
                 onChange={(e) => setCourse(e.target.value)}
               />
-              
+
               {course && (
                 <div style={{ marginTop: '24px' }}>
                   <p className="builder-helper-text">
-                    Great! Now paste your course material in the input below and press Enter to extract objectives.
+                    Great! Now paste your course material in the input below and press
+                    Enter to extract objectives.
                   </p>
                 </div>
               )}
@@ -178,13 +197,18 @@ export function ObjectivesPage() {
                 onKeyDown={handleKeyDown}
                 rows={3}
               />
-              <button 
-                className="builder-send-button" 
+              <button
+                className="builder-send-button"
                 disabled={isDisabled}
                 onClick={extract}
               >
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
                 </svg>
               </button>
             </div>
@@ -194,14 +218,18 @@ export function ObjectivesPage() {
         {/* Right Panel - Objectives by Cluster */}
         <div className="builder-right-panel">
           <div className="builder-preview-header">Objectives by Cluster</div>
-          
+
           <div className="builder-preview-content">
             {objectives.length === 0 && !loading && (
               <div className="builder-empty-preview">
                 <div className="builder-empty-icon">
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
                   </svg>
                 </div>
                 <p>Objectives will appear here grouped by cluster</p>
@@ -223,20 +251,26 @@ export function ObjectivesPage() {
                     <div className="builder-objectives-list">
                       {clusterObjectives.map((obj) => (
                         <div key={obj.id} className="builder-objective">
-                          <div className="builder-objective-number">{getObjectiveNumber(obj.id)}</div>
+                          <div className="builder-objective-number">
+                            {getObjectiveNumber(obj.id)}
+                          </div>
                           {isEditing ? (
                             <>
                               <div className="builder-objective-edit-fields">
                                 <input
                                   className="builder-objective-input"
                                   value={obj.text}
-                                  onChange={(e) => updateObjective(obj.id, 'text', e.target.value)}
+                                  onChange={(e) =>
+                                    updateObjective(obj.id, 'text', e.target.value)
+                                  }
                                   placeholder="Enter objective..."
                                 />
                                 <input
                                   className="builder-cluster-input"
                                   value={obj.cluster}
-                                  onChange={(e) => updateObjective(obj.id, 'cluster', e.target.value)}
+                                  onChange={(e) =>
+                                    updateObjective(obj.id, 'cluster', e.target.value)
+                                  }
                                   placeholder="Cluster name..."
                                 />
                               </div>
@@ -245,8 +279,17 @@ export function ObjectivesPage() {
                                 onClick={() => deleteObjective(obj.id)}
                                 title="Delete objective"
                               >
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                <svg
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                  />
                                 </svg>
                               </button>
                             </>
@@ -261,10 +304,27 @@ export function ObjectivesPage() {
                 {isEditing && (
                   <button className="builder-add-objective" onClick={addObjective}>
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
                     </svg>
                     <span>Add objective</span>
                   </button>
+                )}
+                {Object.keys(graph).length > 0 && (
+                  <div className="builder-graph">
+                    <h3>Dependency Diagram</h3>
+                    <ul>
+                      {Object.entries(graph).map(([cluster, deps]) => (
+                        <li key={cluster}>
+                          {cluster}: {deps.length ? deps.join(', ') : 'none'}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
               </div>
             )}
@@ -276,8 +336,12 @@ export function ObjectivesPage() {
               {!isEditing ? (
                 <button className="builder-edit-button" onClick={startEditing}>
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
                   </svg>
                   <span>Edit</span>
                 </button>

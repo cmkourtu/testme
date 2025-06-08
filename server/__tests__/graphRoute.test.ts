@@ -32,3 +32,11 @@ test('POST /api/graph/generate validates objective shape', async () => {
     .send({ objectives: [{ bad: true }] });
   expect(res.status).toBe(400);
 });
+
+test('POST /api/graph/generate rejects blank fields', async () => {
+  const res = await request(app)
+    .post('/api/graph/generate')
+    .send({ objectives: [{ id: ' ', text: 'a', bloom: '', cluster: 'Intro' }] });
+
+  expect(res.status).toBe(400);
+});
