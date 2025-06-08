@@ -96,6 +96,9 @@ shared package.
   and course save.
 - **Practice View** – Simple learner interface that submits free responses and
   loads the next item.
+- **Dependency Graph** – `POST /api/graph/generate` builds a cluster graph from
+  a list of objectives. All objective fields (`id`, `text`, `bloom`, `cluster`)
+  must be non-empty strings.
 ---
 
 Contributions should follow the coding guidelines in `AGENT.md`, keeping
