@@ -92,10 +92,10 @@ shared package.
   text file.
 - **Admin CRUD** – `/api/objectives` and `/api/items` expose basic management
   routes.
-- **Upload Wizard UI** – Front-end flow for file or text input, objective edit,
-  and course save.
+- **Upload Wizard UI** – Front-end flow for file or text input, objective edit with cluster grouping, displays a dependency diagram, and saves the course.
 - **Practice View** – Simple learner interface that submits free responses and
   loads the next item.
+- **Anonymous Auth** – Client assigns a UUID on first load and sends it as `X-User` for all API requests.
 - **Dependency Graph** – `POST /api/graph/generate` builds a cluster graph from
   a list of objectives. All objective fields (`id`, `text`, `bloom`, `cluster`)
   must be non-empty strings.
