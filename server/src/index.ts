@@ -7,6 +7,7 @@ import { extractObjectives } from './objectives';
 import { generateClusterGraph } from './llm/graphGenerator';
 import { adminRouter } from './admin';
 import { courseRouter } from './courses';
+import { practiceRouter } from './practice';
 
 // Express server exposing health check and upload route.
 export const app = express();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api', adminRouter);
 app.use('/api/courses', courseRouter);
+app.use('/api/practice', practiceRouter);
 
 app.post('/api/upload', async (req, res) => {
   const text = req.body.text;

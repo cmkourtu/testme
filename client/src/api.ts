@@ -25,3 +25,25 @@ export async function submitAnswer(itemId: number, answer: string) {
   });
   return res.json();
 }
+
+export async function generatePracticeItem(objective: string, tier: number) {
+  const res = await apiFetch('/api/practice/question', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ objective, tier }),
+  });
+  return res.json();
+}
+
+export async function gradePracticeAnswer(
+  stem: string,
+  reference: string,
+  answer: string,
+) {
+  const res = await apiFetch('/api/practice/grade', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ stem, reference, answer }),
+  });
+  return res.json();
+}

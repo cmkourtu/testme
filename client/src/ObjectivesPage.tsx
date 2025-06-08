@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { apiFetch } from './api';
+import { ObjectivePractice } from './ObjectivePractice';
 import './chatgpt-theme.css';
 
 interface ExtractedObjective {
@@ -29,6 +30,7 @@ export function ObjectivesPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedObjectives, setEditedObjectives] = useState<ExtractedObjective[]>([]);
   const [viewMode, setViewMode] = useState<ViewMode>('objectives');
+  const [practiceObj, setPracticeObj] = useState<ExtractedObjective | null>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -127,6 +129,15 @@ export function ObjectivesPage() {
   const isDisabled = loading || !text.trim() || !course.trim();
   const displayObjectives = isEditing ? editedObjectives : objectives;
   const groupedObjectives = groupObjectivesByCluster(displayObjectives);
+
+  if (practiceObj) {
+    return (
+      <ObjectivePractice
+        objective={practiceObj.text}
+        onBack={() => setPracticeObj(null)}
+      />
+    );
+  }
 
   return (
     <div className="builder-container">
@@ -342,7 +353,13 @@ export function ObjectivesPage() {
                               </button>
                             </>
                           ) : (
-                            <p className="builder-objective-text">{obj.text}</p>
+                            <p
+                              className="builder-objective-text"
+                              onClick={() => setPracticeObj(obj)}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              {obj.text}
+                            </p>
                           )}
                         </div>
                       ))}
