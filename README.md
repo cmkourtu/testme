@@ -86,7 +86,8 @@ shared package.
 
 - **Text Upload** – `POST /api/upload` saves raw text and returns an `upload_id`.
 - **Objective Extraction** – `POST /api/objectives/extract` sends text to the
-  DeepSeek LLM and returns a JSON list of objectives.
+  DeepSeek LLM and returns a JSON list of objectives along with a cluster
+  dependency graph.
 - **Course Creation** – `POST /api/courses` associates a title with an uploaded
   text file.
 - **Admin CRUD** – `/api/objectives` and `/api/items` expose basic management
@@ -95,6 +96,9 @@ shared package.
   and course save.
 - **Practice View** – Simple learner interface that submits free responses and
   loads the next item.
+- **Dependency Graph** – `POST /api/graph/generate` builds a cluster graph from
+  a list of objectives. All objective fields (`id`, `text`, `bloom`, `cluster`)
+  must be non-empty strings.
 ---
 
 Contributions should follow the coding guidelines in `AGENT.md`, keeping
