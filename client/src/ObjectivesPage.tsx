@@ -345,143 +345,164 @@ export function ObjectivesPage() {
 
             {objectives.length > 0 && viewMode === 'dependencies' && (
               <div className="builder-dependency-graph">
-                <svg className="dependency-diagram" viewBox="0 0 800 600">
-                  {/* Calculate positions for nodes in hierarchical layout */}
-                  {(() => {
-                    const clusters = Object.keys(graph);
-                    const positions: { [key: string]: { x: number; y: number } } = {};
-                    
-                    // Create levels based on dependencies
-                    const levels: string[][] = [];
-                    const visited = new Set<string>();
-                    const inDegree: { [key: string]: number } = {};
-                    
-                    // Initialize in-degree counts
-                    clusters.forEach(cluster => {
-                      inDegree[cluster] = 0;
+                {/* Calculate positions for nodes in hierarchical layout */}
+                {(() => {
+                  const clusters = Object.keys(graph);
+                  const positions: { [key: string]: { x: number; y: number } } = {};
+                  const nodeRadius = 40;  // Reduced from 50
+                  
+                  // Create levels based on dependencies
+                  const levels: string[][] = [];
+                  const visited = new Set<string>();
+                  const inDegree: { [key: string]: number } = {};
+                  
+                  // Initialize in-degree counts
+                  clusters.forEach(cluster => {
+                    inDegree[cluster] = 0;
+                  });
+                  
+                  // Count incoming edges
+                  Object.entries(graph).forEach(([from, deps]) => {
+                    deps.forEach(to => {
+                      if (inDegree[to] !== undefined) {
+                        inDegree[to]++;
+                      }
                     });
+                  });
+                  
+                  // Find nodes with no incoming edges (roots)
+                  let currentLevel = clusters.filter(c => inDegree[c] === 0);
+                  
+                  while (currentLevel.length > 0) {
+                    levels.push([...currentLevel]);
+                    currentLevel.forEach(node => visited.add(node));
                     
-                    // Count incoming edges
-                    Object.entries(graph).forEach(([from, deps]) => {
-                      deps.forEach(to => {
-                        if (inDegree[to] !== undefined) {
-                          inDegree[to]++;
+                    const nextLevel: string[] = [];
+                    currentLevel.forEach(node => {
+                      (graph[node] || []).forEach(dep => {
+                        if (!visited.has(dep) && !nextLevel.includes(dep)) {
+                          nextLevel.push(dep);
                         }
                       });
                     });
-                    
-                    // Find nodes with no incoming edges (roots)
-                    let currentLevel = clusters.filter(c => inDegree[c] === 0);
-                    
-                    while (currentLevel.length > 0) {
-                      levels.push([...currentLevel]);
-                      currentLevel.forEach(node => visited.add(node));
-                      
-                      const nextLevel: string[] = [];
-                      currentLevel.forEach(node => {
-                        (graph[node] || []).forEach(dep => {
-                          if (!visited.has(dep) && !nextLevel.includes(dep)) {
-                            nextLevel.push(dep);
-                          }
-                        });
-                      });
-                      currentLevel = nextLevel;
+                    currentLevel = nextLevel;
+                  }
+                  
+                  // Add any remaining nodes
+                  clusters.forEach(cluster => {
+                    if (!visited.has(cluster)) {
+                      levels.push([cluster]);
+                    }
+                  });
+                  
+                  // Calculate positions
+                  const maxNodesPerRow = 4;  // Limit nodes per row for better spacing
+                  const levelHeight = 120;   // Fixed height between levels
+                  const nodeSpacing = 200;   // Fixed horizontal spacing between nodes
+                  const verticalOffset = 80;  
+                  
+                  levels.forEach((level, levelIndex) => {
+                    // Split level into rows if too many nodes
+                    const rows = [];
+                    for (let i = 0; i < level.length; i += maxNodesPerRow) {
+                      rows.push(level.slice(i, i + maxNodesPerRow));
                     }
                     
-                    // Add any remaining nodes
-                    clusters.forEach(cluster => {
-                      if (!visited.has(cluster)) {
-                        levels.push([cluster]);
-                      }
-                    });
-                    
-                    // Calculate positions
-                    const levelHeight = 500 / (levels.length + 1);
-                    levels.forEach((level, levelIndex) => {
-                      const levelWidth = 700 / (level.length + 1);
-                      level.forEach((cluster, clusterIndex) => {
+                    rows.forEach((row, rowIndex) => {
+                      const rowWidth = (row.length - 1) * nodeSpacing;
+                      const startX = (1000 - rowWidth) / 2;  // Center the row
+                      
+                      row.forEach((cluster, clusterIndex) => {
                         positions[cluster] = {
-                          x: levelWidth * (clusterIndex + 1) + 50,
-                          y: levelHeight * (levelIndex + 1) + 50
+                          x: startX + (clusterIndex * nodeSpacing),
+                          y: verticalOffset + (levelIndex * levelHeight) + (rowIndex * 80)
                         };
                       });
                     });
+                  });
 
-                    return (
-                      <>
-                        <defs>
-                          <marker
-                            id="arrowhead"
-                            viewBox="0 0 10 10"
-                            refX="10"
-                            refY="5"
-                            markerWidth="8"
-                            markerHeight="8"
-                            orient="auto"
-                          >
-                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#10a37f" />
-                          </marker>
-                        </defs>
-                        
-                        {/* Draw dependency arrows */}
-                        {Object.entries(graph).map(([from, dependencies]) => 
-                          dependencies.map((to) => {
-                            const fromPos = positions[from];
-                            const toPos = positions[to];
-                            if (fromPos && toPos) {
-                              // Reverse the arrow direction: from prerequisite TO dependent
-                              const dx = fromPos.x - toPos.x;  // Swapped
-                              const dy = fromPos.y - toPos.y;  // Swapped
-                              const distance = Math.sqrt(dx * dx + dy * dy);
-                              const unitX = dx / distance;
-                              const unitY = dy / distance;
-                              
-                              // Start from prerequisite (to) and end at dependent (from)
-                              const startX = toPos.x + unitX * 50;   // Start from 'to'
-                              const startY = toPos.y + unitY * 50;   // Start from 'to'
-                              const endX = fromPos.x - unitX * 50;   // End at 'from'
-                              const endY = fromPos.y - unitY * 50;   // End at 'from'
-                              
-                              return (
-                                <line
-                                  key={`${from}-${to}`}
-                                  x1={startX}
-                                  y1={startY}
-                                  x2={endX}
-                                  y2={endY}
-                                  className="dependency-arrow"
-                                  markerEnd="url(#arrowhead)"
-                                />
-                              );
-                            }
-                            return null;
-                          })
-                        )}
+                  // Calculate the actual height needed
+                  const maxY = Math.max(...Object.values(positions).map(p => p.y)) + 100;
+                  const svgHeight = Math.max(700, maxY);
 
-                        {/* Draw cluster nodes */}
-                        {clusters.map((cluster) => {
-                          const pos = positions[cluster];
-                          const hasOutgoing = (graph[cluster] || []).length > 0;
-                          const hasIncoming = Object.values(graph).some(deps => deps.includes(cluster));
-                          
-                          return (
-                            <g key={`node-${cluster}`}>
-                              <circle
-                                cx={pos.x}
-                                cy={pos.y}
-                                r="50"
-                                className={`dependency-node ${hasOutgoing ? 'has-outgoing' : ''} ${hasIncoming ? 'has-incoming' : ''}`}
+                  return (
+                    <svg 
+                      className="dependency-diagram" 
+                      viewBox={`0 0 1000 ${svgHeight}`}
+                      style={{ aspectRatio: `1000/${svgHeight}` }}
+                    >
+                      <defs>
+                        <marker
+                          id="arrowhead"
+                          viewBox="0 0 10 10"
+                          refX="10"
+                          refY="5"
+                          markerWidth="8"
+                          markerHeight="8"
+                          orient="auto"
+                        >
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#10a37f" />
+                        </marker>
+                      </defs>
+                      
+                      {/* Draw dependency arrows */}
+                      {Object.entries(graph).map(([from, dependencies]) => 
+                        dependencies.map((to) => {
+                          const fromPos = positions[from];
+                          const toPos = positions[to];
+                          if (fromPos && toPos) {
+                            // Reverse the arrow direction: from prerequisite TO dependent
+                            const dx = fromPos.x - toPos.x;  
+                            const dy = fromPos.y - toPos.y;  
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                            const unitX = dx / distance;
+                            const unitY = dy / distance;
+                            
+                            // Start from prerequisite (to) and end at dependent (from)
+                            const startX = toPos.x + unitX * nodeRadius;   
+                            const startY = toPos.y + unitY * nodeRadius;   
+                            const endX = fromPos.x - unitX * nodeRadius;   
+                            const endY = fromPos.y - unitY * nodeRadius;   
+                            
+                            return (
+                              <line
+                                key={`${from}-${to}`}
+                                x1={startX}
+                                y1={startY}
+                                x2={endX}
+                                y2={endY}
+                                className="dependency-arrow"
+                                markerEnd="url(#arrowhead)"
                               />
-                              <text x={pos.x} y={pos.y} className="dependency-label">
-                                {cluster}
-                              </text>
-                            </g>
-                          );
-                        })}
-                      </>
-                    );
-                  })()}
-                </svg>
+                            );
+                          }
+                          return null;
+                        })
+                      )}
+
+                      {/* Draw cluster nodes */}
+                      {clusters.map((cluster) => {
+                        const pos = positions[cluster];
+                        const hasOutgoing = (graph[cluster] || []).length > 0;
+                        const hasIncoming = Object.values(graph).some(deps => deps.includes(cluster));
+                        
+                        return (
+                          <g key={`node-${cluster}`}>
+                            <circle
+                              cx={pos.x}
+                              cy={pos.y}
+                              r={nodeRadius}
+                              className={`dependency-node ${hasOutgoing ? 'has-outgoing' : ''} ${hasIncoming ? 'has-incoming' : ''}`}
+                            />
+                            <text x={pos.x} y={pos.y} className="dependency-label">
+                              {cluster}
+                            </text>
+                          </g>
+                        );
+                      })}
+                    </svg>
+                  );
+                })()}
 
                 {/* Legend */}
                 <div className="dependency-legend">
