@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import { db } from "../../shared/db";
+import { db } from '../../shared/db';
 
 export interface DependencyGraph {
   [clusterId: number]: number[];

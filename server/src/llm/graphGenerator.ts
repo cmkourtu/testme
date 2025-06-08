@@ -29,14 +29,16 @@ function parse(content: string): ClusterGraph {
   return obj as ClusterGraph;
 }
 
-export async function generateClusterGraph(objectives: ExtractedObjective[]): Promise<ClusterGraph> {
+export async function generateClusterGraph(
+  objectives: ExtractedObjective[],
+): Promise<ClusterGraph> {
   const body = {
     model: 'deepseek-chat',
     messages: [
       { role: 'system', content: dependencyGraphSystem },
-      { role: 'user', content: dependencyGraphUser(objectives) }
+      { role: 'user', content: dependencyGraphUser(objectives) },
     ],
-    temperature: 0
+    temperature: 0,
   };
 
   const res = await deepSeekChat(body);

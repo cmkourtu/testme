@@ -99,6 +99,7 @@ shared package.
 - **Dependency Graph** – `POST /api/graph/generate` builds a cluster graph from
   a list of objectives. All objective fields (`id`, `text`, `bloom`, `cluster`)
   must be non-empty strings.
+
 ---
 
 Contributions should follow the coding guidelines in `AGENT.md`, keeping

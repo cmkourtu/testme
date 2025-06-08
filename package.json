@@ -13,7 +13,9 @@
     "test": "pnpm exec jest",
     "coverage": "pnpm exec jest --coverage && node scripts/makeBadge.js",
     "dev:test": "pnpm exec start-server-and-test 'pnpm dev' 'http://localhost:5173|http://localhost:3000/health' 'echo done'",
-    "seed": "pnpm --filter server exec prisma db push && pnpm exec tsx server/prisma/seed.ts"
+    "seed": "pnpm --filter server exec prisma db push && pnpm exec tsx server/prisma/seed.ts",
+    "format": "pnpm exec prettier --write .",
+    "format:check": "pnpm exec prettier --check ."
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",

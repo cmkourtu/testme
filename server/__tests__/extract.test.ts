@@ -20,15 +20,15 @@ test('objective extractor returns objects', async () => {
         {
           message: {
             content: JSON.stringify([
-              { id: 'A-1', text: 'Define X', bloom: 'Remember', cluster: 'Intro' }
-            ])
-          }
-        }
-      ]
+              { id: 'A-1', text: 'Define X', bloom: 'Remember', cluster: 'Intro' },
+            ]),
+          },
+        },
+      ],
     })
     .post('/v1/chat/completions')
     .reply(200, {
-      choices: [{ message: { content: '{"Intro":[]}' } }]
+      choices: [{ message: { content: '{"Intro":[]}' } }],
     });
 
   const res = await request(app)
@@ -40,18 +40,13 @@ test('objective extractor returns objects', async () => {
   expect(res.body.graph).toEqual({ Intro: [] });
 });
 
-
 test('extract requires text', async () => {
-  const res = await request(app)
-    .post('/api/objectives/extract')
-    .send({ course: 'Demo' });
+  const res = await request(app).post('/api/objectives/extract').send({ course: 'Demo' });
   expect(res.status).toBe(400);
 });
 
 test('extract requires course', async () => {
-  const res = await request(app)
-    .post('/api/objectives/extract')
-    .send({ text: 'hi' });
+  const res = await request(app).post('/api/objectives/extract').send({ text: 'hi' });
   expect(res.status).toBe(400);
 });
 

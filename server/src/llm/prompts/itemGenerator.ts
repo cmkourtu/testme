@@ -18,7 +18,7 @@ export const itemGeneratorUser = (
   bloom: string,
   tier: number,
   context: string,
-  prior: string[]
+  prior: string[],
 ) => `Objective: ${objective}
 Requested Bloom level: ${bloom}
 Difficulty tier: ${tier}

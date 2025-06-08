@@ -1,7 +1,7 @@
 import { deepSeekChat } from './llm/deepseek';
 import {
   objectiveExtractorSystem,
-  objectiveExtractorUser
+  objectiveExtractorUser,
 } from './llm/prompts/objectiveExtractor';
 
 export interface ExtractedObjective {
@@ -41,23 +41,23 @@ function parseList(content: string): ExtractedObjective[] {
       id: o.id,
       text: o.text,
       bloom: o.bloom,
-      cluster: o.cluster
+      cluster: o.cluster,
     } as ExtractedObjective;
   });
 }
 
 export async function extractObjectives(
   course: string,
-  text: string
+  text: string,
 ): Promise<ExtractedObjective[]> {
   console.log('Calling LLM for course', course);
   const body = {
     model: 'deepseek-chat',
     messages: [
       { role: 'system', content: objectiveExtractorSystem },
-      { role: 'user', content: objectiveExtractorUser(course, text) }
+      { role: 'user', content: objectiveExtractorUser(course, text) },
     ],
-    temperature: 0
+    temperature: 0,
   };
 
   const res = await deepSeekChat(body);
@@ -67,4 +67,3 @@ export async function extractObjectives(
   console.log('Parsed', parsed.length, 'objectives');
   return parsed;
 }
-

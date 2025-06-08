@@ -5,7 +5,7 @@ async function main() {
   await db.user.upsert({
     where: { uuid: 'demo-uuid' },
     create: { uuid: 'demo-uuid' },
-    update: {}
+    update: {},
   });
 
   const clusters = await db.$transaction(
@@ -20,13 +20,13 @@ async function main() {
               data: Array.from({ length: 3 }).map((__, j) => ({
                 tier: 1,
                 stem: `Seed stem C${i + 1}-${j + 1}`,
-                reference: JSON.stringify({ answer: 'demo' })
-              }))
-            }
-          }
-        }
-      })
-    )
+                reference: JSON.stringify({ answer: 'demo' }),
+              })),
+            },
+          },
+        },
+      }),
+    ),
   );
   console.log(`Seeded ${clusters.length} objectives`);
 }

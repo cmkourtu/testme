@@ -2,7 +2,7 @@ import { initAnonUser } from './auth';
 
 export async function apiFetch(
   input: RequestInfo | URL,
-  init: RequestInit = {}
+  init: RequestInit = {},
 ): Promise<Response> {
   const user = initAnonUser();
   const headers: Record<string, string> = {

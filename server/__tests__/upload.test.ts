@@ -11,7 +11,7 @@ afterEach(async () => {
 test('upload route saves text', async () => {
   const sample = await fs.readFile(
     path.join(__dirname, 'fixtures', 'sample.txt'),
-    'utf8'
+    'utf8',
   );
   const res = await request(app).post('/api/upload').send({ text: sample });
   expect(res.status).toBe(201);

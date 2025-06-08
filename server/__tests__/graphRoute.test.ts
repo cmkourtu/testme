@@ -3,7 +3,7 @@ import { app } from '../src/index';
 import { generateClusterGraph } from '../src/llm/graphGenerator';
 
 jest.mock('../src/llm/graphGenerator', () => ({
-  generateClusterGraph: jest.fn()
+  generateClusterGraph: jest.fn(),
 }));
 
 const mockGen = generateClusterGraph as jest.Mock;

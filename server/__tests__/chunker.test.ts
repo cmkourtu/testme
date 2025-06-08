@@ -5,7 +5,6 @@ test('splits text into fixed-size chunks', () => {
   expect(chunks).toEqual(['a'.repeat(10), 'a'.repeat(10), 'a'.repeat(5)]);
 });
 
-
 test('returns empty array for empty text', () => {
   expect(splitIntoChunks('', 5)).toEqual([]);
 });

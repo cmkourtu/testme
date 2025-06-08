@@ -4,9 +4,9 @@ import { db } from '../../shared/db';
 jest.mock('../../shared/db', () => ({
   db: {
     clusterState: {
-      findFirst: jest.fn()
-    }
-  }
+      findFirst: jest.fn(),
+    },
+  },
 }));
 
 const findFirst = db.clusterState.findFirst as jest.Mock;
@@ -39,4 +39,3 @@ test('canUnlock handles circular dependencies', async () => {
   const ok = await canUnlock(5, 1);
   expect(ok).toBe(true);
 });
-
