@@ -362,7 +362,7 @@ export function ObjectivesPage() {
                   });
                   
                   // Count incoming edges
-                  Object.entries(graph).forEach(([from, deps]) => {
+                  Object.entries(graph).forEach(([, deps]) => {
                     deps.forEach(to => {
                       if (inDegree[to] !== undefined) {
                         inDegree[to]++;
