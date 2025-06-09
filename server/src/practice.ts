@@ -23,6 +23,14 @@ practiceRouter.post('/question', async (req, res) => {
     res.json({ stem: item.stem, reference: item.reference });
   } catch (err) {
     console.error(err);
+    if (err instanceof Error) {
+      if (err.message === 'missing_api_key') {
+        return res.status(500).json({ error: 'missing_api_key' });
+      }
+      if (err.message === 'invalid_response') {
+        return res.status(500).json({ error: 'invalid_response' });
+      }
+    }
     res.status(500).json({ error: 'llm_error' });
   }
 });
@@ -48,6 +56,14 @@ practiceRouter.post('/grade', async (req, res) => {
     res.json(result);
   } catch (err) {
     console.error(err);
+    if (err instanceof Error) {
+      if (err.message === 'missing_api_key') {
+        return res.status(500).json({ error: 'missing_api_key' });
+      }
+      if (err.message === 'invalid_response') {
+        return res.status(500).json({ error: 'invalid_response' });
+      }
+    }
     res.status(500).json({ error: 'llm_error' });
   }
 });

@@ -7,7 +7,7 @@ beforeEach(() => {
   Object.defineProperty(globalThis, 'fetch', {
     writable: true,
     configurable: true,
-    value: jest.fn(() => Promise.resolve({ json: () => Promise.resolve({}) })),
+    value: jest.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({}) })),
   });
 });
 
