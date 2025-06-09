@@ -44,7 +44,12 @@ export function ObjectivePractice({ objective, onBack }: Props) {
         <header className="practice-header">
           <button className="practice-back-button" onClick={onBack}>
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
           <div className="practice-title-section">
@@ -64,17 +69,25 @@ export function ObjectivePractice({ objective, onBack }: Props) {
             <p className="difficulty-description">
               Choose how challenging you want the practice question to be
             </p>
-            
+
             <div className="difficulty-options">
               {[
-                { tier: 1, name: 'Basic', description: 'Fundamental concepts and recall' },
-                { tier: 3, name: 'Intermediate', description: 'Application and analysis' },
-                { tier: 5, name: 'Advanced', description: 'Synthesis and evaluation' }
+                {
+                  tier: 1,
+                  name: 'Basic',
+                  description: 'Fundamental concepts and recall',
+                },
+                {
+                  tier: 3,
+                  name: 'Intermediate',
+                  description: 'Application and analysis',
+                },
+                { tier: 5, name: 'Advanced', description: 'Synthesis and evaluation' },
               ].map(({ tier: t, name, description }) => (
-                <button 
-                  key={t} 
+                <button
+                  key={t}
                   className={`difficulty-card ${loading ? 'disabled' : ''}`}
-                  onClick={() => start(t)} 
+                  onClick={() => start(t)}
                   disabled={loading}
                 >
                   <div className="difficulty-tier">Tier {t}</div>
@@ -94,7 +107,12 @@ export function ObjectivePractice({ objective, onBack }: Props) {
       <header className="practice-header">
         <button className="practice-back-button" onClick={onBack}>
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
         <div className="practice-title-section">
@@ -112,19 +130,19 @@ export function ObjectivePractice({ objective, onBack }: Props) {
 
           <div className="answer-section">
             <label className="answer-label">Your Answer</label>
-            <textarea 
+            <textarea
               className="answer-input"
-              value={answer} 
+              value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your answer here..."
               rows={6}
               disabled={loading}
             />
-            
-            <button 
+
+            <button
               className={`submit-button ${loading || !answer.trim() ? 'disabled' : ''}`}
-              onClick={submit} 
+              onClick={submit}
               disabled={loading || !answer.trim()}
             >
               {loading ? (
@@ -136,7 +154,12 @@ export function ObjectivePractice({ objective, onBack }: Props) {
                 <>
                   <span>Submit Answer</span>
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </>
               )}
@@ -144,15 +167,27 @@ export function ObjectivePractice({ objective, onBack }: Props) {
           </div>
 
           {result && (
-            <div className={`result-section ${result.startsWith('Correct') ? 'correct' : 'incorrect'}`}>
+            <div
+              className={`result-section ${result.startsWith('Correct') ? 'correct' : 'incorrect'}`}
+            >
               <div className="result-icon">
                 {result.startsWith('Correct') ? (
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 ) : (
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 )}
               </div>
