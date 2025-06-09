@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { generatePracticeItem, gradePracticeAnswer } from './api';
   const [error, setError] = useState('');
+  // start a practice session at the chosen difficulty tier
     setError('');
     try {
       const item = await generatePracticeItem(objective, t);
