@@ -1,34 +1,38 @@
 import React, { useState } from 'react';
 import { generatePracticeItem, gradePracticeAnswer } from './api';
-  const [error, setError] = useState('');
-  // start a practice session at the chosen difficulty tier
-    setError('');
-    try {
-      const item = await generatePracticeItem(objective, t);
-      setStem(item.stem);
-      setReference(item.reference);
-      setTier(t);
-    } catch (e) {
-      setError((e as Error).message);
-    }
-    setError('');
-    try {
-      const res = await gradePracticeAnswer(stem, reference, answer);
-      setResult(res.verdict + (res.feedback ? `: ${res.feedback}` : ''));
-    } catch (e) {
-      setError((e as Error).message);
-    }
+const [error, setError] = useState('');
+// start a practice session at the chosen difficulty tier
+setError('');
+try {
+  const item = await generatePracticeItem(objective, t);
+  setStem(item.stem);
+  setReference(item.reference);
+  setTier(t);
+} catch (e) {
+  setError((e as Error).message);
+}
+setError('');
+try {
+  const res = await gradePracticeAnswer(stem, reference, answer);
+  setResult(res.verdict + (res.feedback ? `: ${res.feedback}` : ''));
+} catch (e) {
+  setError((e as Error).message);
+}
 
-        {error && (
-          <div role="alert" style={{ color: 'red' }}>
-            {error}
-          </div>
-        )}
-      {error && (
-        <div role="alert" style={{ color: 'red' }}>
-          {error}
-        </div>
-      )}
+{
+  error && (
+    <div role="alert" style={{ color: 'red' }}>
+      {error}
+    </div>
+  );
+}
+{
+  error && (
+    <div role="alert" style={{ color: 'red' }}>
+      {error}
+    </div>
+  );
+}
 export function ObjectivePractice({ objective, onBack }: Props) {
   const [tier, setTier] = useState<number | null>(null);
   const [stem, setStem] = useState('');
