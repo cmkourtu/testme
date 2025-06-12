@@ -394,6 +394,14 @@ body {
   color: #f3f4f6;
   line-height: 1.5;
   flex: 1;
+  transition: color 0.2s;
+}
+
+.builder-objective-text:hover {
+  color: #10a37f;
+  text-decoration: underline;
+  text-decoration-color: #10a37f;
+  text-underline-offset: 4px;
 }
 
 /* Loading State */
@@ -793,4 +801,348 @@ body {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
+}
+
+/* Practice Mode Styles */
+.practice-container {
+  min-height: 100vh;
+  background-color: #343541;
+  color: #f3f4f6;
+}
+
+.practice-header {
+  background-color: #2d2d30;
+  border-bottom: 1px solid #444447;
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.practice-back-button {
+  background: none;
+  border: none;
+  color: #d1d5db;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.practice-back-button:hover {
+  background-color: #3e3e42;
+}
+
+.practice-back-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.practice-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.practice-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin: 0;
+}
+
+.practice-subtitle {
+  font-size: 14px;
+  color: #8e8ea0;
+  margin: 0;
+}
+
+/* Practice Content */
+.practice-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.practice-objective-display {
+  background-color: #40414f;
+  border: 1px solid #565869;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 40px;
+}
+
+.practice-objective-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #10a37f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px 0;
+}
+
+.practice-objective-text {
+  font-size: 16px;
+  color: #f3f4f6;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Difficulty Selection */
+.difficulty-selection {
+  text-align: center;
+}
+
+.difficulty-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin: 0 0 8px 0;
+}
+
+.difficulty-description {
+  font-size: 16px;
+  color: #a1a1aa;
+  margin: 0 0 32px 0;
+}
+
+.difficulty-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.difficulty-card {
+  background-color: #40414f;
+  border: 2px solid #565869;
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.difficulty-card:hover:not(.disabled) {
+  background-color: #4a4b5e;
+  border-color: #10a37f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.difficulty-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.difficulty-tier {
+  font-size: 12px;
+  font-weight: 600;
+  color: #10a37f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.difficulty-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin-bottom: 8px;
+}
+
+.difficulty-desc {
+  font-size: 14px;
+  color: #a1a1aa;
+  line-height: 1.4;
+}
+
+/* Question View */
+.practice-question-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.question-section {
+  background-color: #40414f;
+  border: 1px solid #565869;
+  border-radius: 12px;
+  padding: 32px;
+}
+
+.question-prompt {
+  margin-bottom: 32px;
+}
+
+.question-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #10a37f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px 0;
+}
+
+.question-text {
+  font-size: 18px;
+  color: #f3f4f6;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Answer Section */
+.answer-section {
+  margin-bottom: 24px;
+}
+
+.answer-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #d1d5db;
+  margin-bottom: 12px;
+}
+
+.answer-input {
+  width: 100%;
+  background-color: #2d2d30;
+  border: 1px solid #565869;
+  border-radius: 8px;
+  padding: 16px;
+  color: #f3f4f6;
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  transition: border-color 0.2s;
+  margin-bottom: 16px;
+}
+
+.answer-input:focus {
+  outline: none;
+  border-color: #10a37f;
+}
+
+.answer-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.answer-input::placeholder {
+  color: #8e8ea0;
+}
+
+/* Submit Button */
+.submit-button {
+  background-color: #10a37f;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+
+.submit-button:hover:not(.disabled) {
+  background-color: #0e8a6b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(16, 163, 127, 0.3);
+}
+
+.submit-button.disabled {
+  background-color: #565869;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.practice-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff30;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Result Section */
+.result-section {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-section.correct {
+  background-color: #10a37f20;
+  border: 1px solid #10a37f;
+}
+
+.result-section.incorrect {
+  background-color: #ef444420;
+  border: 1px solid #ef4444;
+}
+
+.result-icon {
+  flex-shrink: 0;
+}
+
+.result-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.result-section.correct .result-icon svg {
+  stroke: #10a37f;
+}
+
+.result-section.incorrect .result-icon svg {
+  stroke: #ef4444;
+}
+
+.result-text {
+  flex: 1;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.result-section.correct .result-text {
+  color: #10a37f;
+}
+
+.result-section.incorrect .result-text {
+  color: #ef4444;
 }
