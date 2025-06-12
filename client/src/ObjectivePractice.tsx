@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { generatePracticeItem, gradePracticeAnswer } from './api';
 
+interface Props {
+  objective: string;
+  onBack: () => void;
+}
+
 export function ObjectivePractice({ objective, onBack }: Props) {
   const [tier, setTier] = useState<number | null>(null);
   const [stem, setStem] = useState('');
   const [reference, setReference] = useState('');
   const [answer, setAnswer] = useState('');
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState<{ verdict: string; feedback?: string } | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
 
   const start = async (t: number) => {
@@ -21,7 +28,7 @@ export function ObjectivePractice({ objective, onBack }: Props) {
   const submit = async () => {
     setLoading(true);
     const res = await gradePracticeAnswer(stem, reference, answer);
-    setResult(res.verdict + (res.feedback ? `: ${res.feedback}` : ''));
+    setResult({ verdict: res.verdict, feedback: res.feedback });
     setLoading(false);
   };
 
@@ -162,16 +169,31 @@ export function ObjectivePractice({ objective, onBack }: Props) {
 
           {result && (
             <div
-              className={`result-section ${result.startsWith('Correct') ? 'correct' : 'incorrect'}`}
+              className={`result-section ${
+                result.verdict === 'correct'
+                  ? 'correct'
+                  : result.verdict === 'partial'
+                    ? 'partial'
+                    : 'incorrect'
+              }`}
             >
               <div className="result-icon">
-                {result.startsWith('Correct') ? (
+                {result.verdict === 'correct' ? (
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
                       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                ) : result.verdict === 'partial' ? (
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
                 ) : (
@@ -185,7 +207,20 @@ export function ObjectivePractice({ objective, onBack }: Props) {
                   </svg>
                 )}
               </div>
-              <p className="result-text">{result}</p>
+              <div className="result-content">
+                <p className="result-verdict">
+                  {result.verdict === 'correct'
+                    ? 'Correct!'
+                    : result.verdict === 'partial'
+                      ? 'Partially Correct'
+                      : result.verdict === 'incorrect'
+                        ? 'Incorrect'
+                        : result.verdict === 'blank'
+                          ? 'No Answer Provided'
+                          : 'Review Required'}
+                </p>
+                {result.feedback && <p className="result-feedback">{result.feedback}</p>}
+              </div>
             </div>
           )}
         </div>

@@ -1110,6 +1110,11 @@ body {
   border: 1px solid #10a37f;
 }
 
+.result-section.partial {
+  background-color: #f59e0b20;
+  border: 1px solid #f59e0b;
+}
+
 .result-section.incorrect {
   background-color: #ef444420;
   border: 1px solid #ef4444;
@@ -1128,10 +1133,47 @@ body {
   stroke: #10a37f;
 }
 
+.result-section.partial .result-icon svg {
+  stroke: #f59e0b;
+}
+
 .result-section.incorrect .result-icon svg {
   stroke: #ef4444;
 }
 
+.result-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-verdict {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.result-section.correct .result-verdict {
+  color: #10a37f;
+}
+
+.result-section.partial .result-verdict {
+  color: #f59e0b;
+}
+
+.result-section.incorrect .result-verdict {
+  color: #ef4444;
+}
+
+.result-feedback {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+  color: #d1d5db;
+}
+
+/* Deprecated - keeping for backward compatibility */
 .result-text {
   flex: 1;
   font-size: 16px;
