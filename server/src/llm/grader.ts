@@ -1,5 +1,8 @@
 import { deepSeekChat } from './deepseek';
-import { freeResponseGraderPrompt, freeResponseGraderUser } from './prompts/freeResponseGrader';
+import {
+  freeResponseGraderPrompt,
+  freeResponseGraderUser,
+} from './prompts/freeResponseGrader';
 
 export type ModelVerdict = 'correct' | 'partial' | 'incorrect' | 'blank' | 'escalate';
 export type Verdict = 'correct' | 'partial' | 'incorrect' | 'blank' | 'escalate';

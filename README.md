@@ -102,7 +102,7 @@ shared package.
 
 ## Known Issues
 
-- **DeepSeek JSON Responses**: The DeepSeek API sometimes returns JSON wrapped in markdown code blocks (````json\n{...}\n````). All LLM response parsers must handle this format. See `server/src/llm/itemGenerator.ts` and `server/src/llm/grader.ts` for the standard parsing pattern.
+- **DeepSeek JSON Responses**: The DeepSeek API sometimes returns JSON wrapped in markdown code blocks (`json\n{...}\n`). All LLM response parsers must handle this format. See `server/src/llm/itemGenerator.ts` and `server/src/llm/grader.ts` for the standard parsing pattern.
 
 ---
 

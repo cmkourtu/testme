@@ -41,12 +41,12 @@
 6. Commit messages should be concise ("feat: add objective extractor" or "fix: update lint config").
 7. The backlog may be outdated. Do not assume it reflects the current state. After closing a ticket mentioned in `docs/backlog-roadmap.md`, update that file accordingly.
 8. Run `pnpm format` before committing or opening a PR to ensure all files conform to the Prettier configuration.
-9. **DeepSeek JSON Parsing**: All LLM response parsers must handle markdown-wrapped JSON. DeepSeek often returns responses like ````json\n{...}\n```` instead of raw JSON. Use the pattern:
-   ```typescript
+9. **DeepSeek JSON Parsing**: All LLM response parsers must handle markdown-wrapped JSON. DeepSeek often returns responses like `json\n{...}\n` instead of raw JSON. Use the pattern:
+   ````typescript
    const trimmed = content.trim();
    const match = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
    const json = match ? match[1].trim() : trimmed;
-   ```
+   ````
 
 ## Testing Checklist
 
