@@ -51,8 +51,7 @@ practiceRouter.post('/grade', async (req, res) => {
     return res.status(400).json({ error: 'answer required' });
   }
   try {
-    const prompt = `${stem}\nReference answer: ${reference}`;
-    const result = await gradeFreeResponse(prompt, answer);
+    const result = await gradeFreeResponse(stem, reference, answer);
     res.json(result);
   } catch (err) {
     console.error(err);

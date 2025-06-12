@@ -37,9 +37,12 @@ export async function generateItem(params: {
 
   const res = await deepSeekChat(body);
   const text = res.choices?.[0]?.message?.content ?? '{}';
+  const trimmed = text.trim();
+  const match = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const json = match ? match[1].trim() : trimmed;
   let obj: unknown;
   try {
-    obj = JSON.parse(text);
+    obj = JSON.parse(json);
   } catch {
     throw new Error('invalid_response');
   }

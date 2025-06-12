@@ -1,7 +1,7 @@
 import { deepSeekChat } from './deepseek';
-import { freeResponseGraderPrompt } from './prompts/freeResponseGrader';
+import { freeResponseGraderPrompt, freeResponseGraderUser } from './prompts/freeResponseGrader';
 
-export type ModelVerdict = 'correct' | 'partial' | 'incorrect' | 'blank' | 'unsure';
+export type ModelVerdict = 'correct' | 'partial' | 'incorrect' | 'blank' | 'escalate';
 export type Verdict = 'correct' | 'partial' | 'incorrect' | 'blank' | 'escalate';
 export interface GradeResult {
   verdict: Verdict;
@@ -14,8 +14,11 @@ export interface GradeResult {
 }
 
 function parse(content: string) {
+  const trimmed = content.trim();
+  const match = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const json = match ? match[1].trim() : trimmed;
   try {
-    return JSON.parse(content) as {
+    return JSON.parse(json) as {
       verdict?: ModelVerdict;
       feedback?: string;
       explanation?: string;
@@ -27,14 +30,16 @@ function parse(content: string) {
 }
 
 export async function gradeFreeResponse(
-  prompt: string,
+  stem: string,
+  reference: string,
   answer: string,
+  bloom: string = 'Remember',
 ): Promise<GradeResult> {
   const body = {
     model: 'deepseek-chat',
     messages: [
       { role: 'system', content: freeResponseGraderPrompt },
-      { role: 'user', content: `Prompt: ${prompt}\nAnswer: ${answer}` },
+      { role: 'user', content: freeResponseGraderUser(stem, reference, answer, bloom) },
     ],
     temperature: 0,
   };
@@ -52,7 +57,7 @@ export async function gradeFreeResponse(
 
   const votes = parsed.map((p) => p.verdict ?? 'incorrect') as ModelVerdict[];
 
-  if (votes.includes('unsure')) {
+  if (votes.includes('escalate')) {
     return { verdict: 'escalate', score: null, modelVotes: votes };
   }
 
