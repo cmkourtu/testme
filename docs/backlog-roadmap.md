@@ -2,16 +2,26 @@
 
 This document lists the backlog tickets and the planned sprint order for the Cursor Learning platform.
 
+## Recent Updates
+
+**December 2024:**
+
+- Added pre-commit hooks with Husky + lint-staged for automatic Prettier formatting (0-3)
+- Enhanced grading feedback to provide contextual responses instead of redundant confirmations (5-6)
+- Improved practice view UI with separate verdict/feedback display and support for all verdict types (6-9)
+- Fixed formatting issues across codebase (AGENT.md, README.md, server/src/llm/grader.ts)
+
 ## Backlog
 
 The backlog is organized by feature area. Each ticket has an ID used for reference.
 
 ### 0 · Project scaffolding
 
-| ID  | Title                                           | Description / subtasks                                                                      | Acceptance criteria                        | Status |
-| --- | ----------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------ | ------ |
-| 0-1 | <span style="color: green">Init monorepo</span> | pnpm init + workspaces root; add client, server, shared packages; Prettier + ESLint configs | `pnpm i && pnpm dev` spins Vite + nodemon. | ✅     |
-| 0-2 | <span style="color: green">CI lint/test</span>  | GitHub Actions with Node 20; run `pnpm lint`, `pnpm test`                                   | PR fails on lint or failing Jest.          | ✅     |
+| ID  | Title                                              | Description / subtasks                                                                      | Acceptance criteria                        | Status |
+| --- | -------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------ | ------ |
+| 0-1 | <span style="color: green">Init monorepo</span>    | pnpm init + workspaces root; add client, server, shared packages; Prettier + ESLint configs | `pnpm i && pnpm dev` spins Vite + nodemon. | ✅     |
+| 0-2 | <span style="color: green">CI lint/test</span>     | GitHub Actions with Node 20; run `pnpm lint`, `pnpm test`                                   | PR fails on lint or failing Jest.          | ✅     |
+| 0-3 | <span style="color: green">Pre-commit hooks</span> | Setup Husky + lint-staged for automatic Prettier formatting on commit                       | Files are auto-formatted before commit     | ✅     |
 
 ### 1 · Core database layer
 
@@ -32,7 +42,7 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | 2-3 | <span style="color: green">Text chunker service</span>      | Split text into chunks ≤ **CHUNK_SIZE** (default 30k chars).                                 | Jest: sample text returns array of chunks. | ✅     |
 | 2-4 | <span style="color: green">Objective extractor route</span> | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.                           | For sample text returns ≥5 objectives.     | ✅     |
 | 2-5 | CRUD objective/item                                         | REST routes `/objectives`, `/items` (GET/PUT/DELETE) for admin UI.                           | Swagger doc passes.                        | ✅     |
-| 2-6 | Session “next” route                                        | `/api/session/next` → scheduler pick logic.                                                  | Unit test returns item with correct tier.  |        |
+| 2-6 | Session "next" route                                        | `/api/session/next` → scheduler pick logic.                                                  | Unit test returns item with correct tier.  |        |
 | 2-7 | Answer grading route                                        | `/api/session/:itemId/answer` posts user text → ensemble DeepSeek grader, writes reviews.    | Correct answer returns verdict correct.    |        |
 
 ### 3 · Scheduler engine
@@ -58,26 +68,28 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 
 ### 5 · LLM Integration
 
-| ID  | Title                                                  | Description                                                          | AC                                       | Status |
-| --- | ------------------------------------------------------ | -------------------------------------------------------------------- | ---------------------------------------- | ------ |
-| 5-1 | <span style="color: green">DeepSeek client util</span> | Axios wrapper with retries, timeout, rate-limit (token bucket).      | Jest mocks retry logic.                  | ✅     |
-| 5-2 | Ensemble grader                                        | `gradeFreeResponse(prompt, answer)` fan-outs 3 calls; majority vote. | Sim test outputs consistent verdicts.    | ✅     |
-| 5-3 | Objective extract prompt                               | System + user template; parse JSON response.                         | Returns valid JSON list.                 | ✅     |
-| 5-4 | Item generator prompt                                  | Template supports tier, Bloom verb, avoids duplicates.               | Generates ≥3 tiers for sample objective. | ✅     |
-| 5-5 | Cost logging middleware                                | Write per-call token counts to `llm_usage` table.                    | Sum of tokens matches DeepSeek metadata. |        |
+| ID  | Title                                                      | Description                                                                 | AC                                                 | Status |
+| --- | ---------------------------------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------- | ------ |
+| 5-1 | <span style="color: green">DeepSeek client util</span>     | Axios wrapper with retries, timeout, rate-limit (token bucket).             | Jest mocks retry logic.                            | ✅     |
+| 5-2 | <span style="color: green">Ensemble grader</span>          | `gradeFreeResponse(prompt, answer)` fan-outs 3 calls; majority vote.        | Sim test outputs consistent verdicts.              | ✅     |
+| 5-3 | <span style="color: green">Objective extract prompt</span> | System + user template; parse JSON response.                                | Returns valid JSON list.                           | ✅     |
+| 5-4 | <span style="color: green">Item generator prompt</span>    | Template supports tier, Bloom verb, avoids duplicates.                      | Generates ≥3 tiers for sample objective.           | ✅     |
+| 5-5 | Cost logging middleware                                    | Write per-call token counts to `llm_usage` table.                           | Sum of tokens matches DeepSeek metadata.           |        |
+| 5-6 | <span style="color: green">Improved grader feedback</span> | Enhanced prompts for contextual feedback instead of redundant confirmations | Correct answers get encouragement, not restatement | ✅     |
 
 ### 6 · Front-end: learner flow
 
-| ID  | Title                                              | Description                                                       | AC                               |
-| --- | -------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------- | --- |
-| 6-1 | Auth stub                                          | Anonymous UUID in `localStorage`; attach header `X-User`.         | Requests include header.         | ✅  |
-| 6-2 | <span style="color: green">Upload wizard UI</span> | Step 1 file drop; Step 2 objective list editable; Step 3 confirm. | Saving creates course record.    | ✅  |
-| 6-3 | Practice view                                      | Card with stem, textarea, submit, feedback toast.                 | Autoloads next item on verdict.  | ✅  |
-| 6-4 | Progress dashboard                                 | Rings per cluster, chapter bar, streak counter.                   | Renders from `/progress` JSON.   |
-| 6-5 | Toast + unlock animation                           | On `clusterUnlocked` socket event show celebration.               | Works in dev over hot reload.    |
-| 6-6 | Settings panel                                     | Toggle dark mode, choose review batch size.                       | Pref saved to `localStorage`.    |
-| 6-7 | Admin item viewer                                  | Table of items with search, tier filter, delete.                  | Acts via CRUD routes.            |
-| 6-8 | Mobile responsive                                  | Tailwind breakpoints for card & dashboard.                        | Chrome devtools iPhone12 passes. |
+| ID  | Title                                                  | Description                                                                              | AC                                      |
+| --- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------- | --- |
+| 6-1 | <span style="color: green">Auth stub</span>            | Anonymous UUID in `localStorage`; attach header `X-User`.                                | Requests include header.                | ✅  |
+| 6-2 | <span style="color: green">Upload wizard UI</span>     | Step 1 file drop; Step 2 objective list editable; Step 3 confirm.                        | Saving creates course record.           | ✅  |
+| 6-3 | <span style="color: green">Practice view</span>        | Card with stem, textarea, submit, feedback toast.                                        | Autoloads next item on verdict.         | ✅  |
+| 6-4 | Progress dashboard                                     | Rings per cluster, chapter bar, streak counter.                                          | Renders from `/progress` JSON.          |
+| 6-5 | Toast + unlock animation                               | On `clusterUnlocked` socket event show celebration.                                      | Works in dev over hot reload.           |
+| 6-6 | Settings panel                                         | Toggle dark mode, choose review batch size.                                              | Pref saved to `localStorage`.           |
+| 6-7 | Admin item viewer                                      | Table of items with search, tier filter, delete.                                         | Acts via CRUD routes.                   |
+| 6-8 | Mobile responsive                                      | Tailwind breakpoints for card & dashboard.                                               | Chrome devtools iPhone12 passes.        |
+| 6-9 | <span style="color: green">Enhanced feedback UI</span> | Separate verdict/feedback display, support for partial verdicts, better visual hierarchy | All verdict types have distinct styling | ✅  |
 
 ### 7 · Front-end: teacher / analytics (stretch)
 
@@ -102,10 +114,10 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 
 The following is the suggested sprint order (≈2 weeks each):
 
-1. **Sprint 1 (weeks 1‑2)** – Tickets: 0‑1 → 0‑2, 1‑1 → 1‑3, 2‑1, 5‑1. Result: local text extractor & seed demo visible in DB.
-2. **Sprint 2 (weeks 3‑4)** – Tickets: 2‑2 → 2‑5, 5‑2 → 5‑4, 6‑1 → 6‑3. Result: user can practice tier‑1 items end‑to‑end.
-3. **Sprint 3 (weeks 5‑6)** – Scheduler 3‑1 → 3‑4, Gatekeeper 4‑1 → 4‑3, dashboard 6‑4. Result: adaptive loop works.
-4. **Sprint 4 (weeks 7‑8)** – Mobile polish 6‑5 → 6‑6, LLM cost log 5‑5, CI & load test 8‑2 → 8‑3.
-5. **Sprint 5 (weeks 9‑10)** – Docker Postgres 1‑5, dev‑container 8‑1, teacher analytics stretch if time.
+1. **Sprint 1 (weeks 1‑2)** – Tickets: 0‑1 → 0‑2, 1‑1 → 1‑3, 2‑1, 5‑1. Result: local text extractor & seed demo visible in DB.
+2. **Sprint 2 (weeks 3‑4)** – Tickets: 2‑2 → 2‑5, 5‑2 → 5‑4, 6‑1 → 6‑3. Result: user can practice tier‑1 items end‑to‑end.
+3. **Sprint 3 (weeks 5‑6)** – Scheduler 3‑1 → 3‑4, Gatekeeper 4‑1 → 4‑3, dashboard 6‑4. Result: adaptive loop works.
+4. **Sprint 4 (weeks 7‑8)** – Mobile polish 6‑5 → 6‑6, LLM cost log 5‑5, CI & load test 8‑2 → 8‑3.
+5. **Sprint 5 (weeks 9‑10)** – Docker Postgres 1‑5, dev‑container 8‑1, teacher analytics stretch if time.
 
 Overall this schedule totals about 10 weeks solo or around 5‑6 weeks with two developers.
