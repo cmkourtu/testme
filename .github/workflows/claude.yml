@@ -22,13 +22,13 @@ jobs:
     name: Claude Review (Sonnet 4)
     if: |
       contains(
-        github.event.comment?.body        ||
-        github.event.review?.body         ||
-        github.event.issue?.body, '@claude'
+        github.event.comment.body        ||
+        github.event.review.body         ||
+        github.event.issue.body, '@claude'
       ) && !contains(
-        github.event.comment?.body        ||
-        github.event.review?.body         ||
-        github.event.issue?.body, '@claudefix'
+        github.event.comment.body        ||
+        github.event.review.body         ||
+        github.event.issue.body, '@claudefix'
       )
     runs-on: ubuntu-latest
     permissions:
@@ -55,9 +55,9 @@ jobs:
   claude-sonnet-fix:
     name: Claude Fix (Sonnet 4)
     if: contains(
-      github.event.comment?.body ||
-      github.event.review?.body  ||
-      github.event.issue?.body, '@claudefix')
+      github.event.comment.body ||
+      github.event.review.body  ||
+      github.event.issue.body, '@claudefix')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -87,13 +87,13 @@ jobs:
     name: Claude Review (Opus 4)
     if: |
       contains(
-        github.event.comment?.body        ||
-        github.event.review?.body         ||
-        github.event.issue?.body, '@claudeopus'
+        github.event.comment.body        ||
+        github.event.review.body         ||
+        github.event.issue.body, '@claudeopus'
       ) && !contains(
-        github.event.comment?.body        ||
-        github.event.review?.body         ||
-        github.event.issue?.body, '@claudeopusfix'
+        github.event.comment.body        ||
+        github.event.review.body         ||
+        github.event.issue.body, '@claudeopusfix'
       )
     runs-on: ubuntu-latest
     permissions:
@@ -119,9 +119,9 @@ jobs:
   claude-opus-fix:
     name: Claude Fix (Opus 4)
     if: contains(
-      github.event.comment?.body ||
-      github.event.review?.body  ||
-      github.event.issue?.body, '@claudeopusfix')
+      github.event.comment.body ||
+      github.event.review.body  ||
+      github.event.issue.body, '@claudeopusfix')
     runs-on: ubuntu-latest
     permissions:
       contents: read
