@@ -20,12 +20,19 @@ beforeAll(async () => {
   db = memoryDb;
   await db.$connect();
   spawnSync(
-    'server/node_modules/.bin/prisma',
-    ['db', 'push', '--schema', 'server/prisma/schema.prisma', '--skip-generate'],
-    {
-      env: { ...process.env, DATABASE_URL: url },
-      stdio: 'inherit',
-    },
+    'pnpm',
+    [
+      '--filter',
+      'server',
+      'exec',
+      'prisma',
+      'db',
+      'push',
+      '--schema',
+      'prisma/schema.prisma',
+      '--skip-generate',
+    ],
+    { env: { ...process.env, DATABASE_URL: url }, stdio: 'inherit' },
   );
   await seed();
 });
