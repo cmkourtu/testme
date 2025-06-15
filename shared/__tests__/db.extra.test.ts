@@ -1,4 +1,8 @@
-import {
+/* eslint-disable @typescript-eslint/no-require-imports */
+import { execSync } from 'child_process';
+process.env.DATABASE_URL = 'file:./dev.db';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const {
   db,
   user,
   item,
@@ -7,12 +11,12 @@ import {
   objectiveState,
   clusterState,
   objective,
-} from '../db';
-import { execSync } from 'child_process';
+} = require('../db');
 
 beforeAll(() => {
   execSync('pnpm --filter server exec prisma db push --skip-generate', {
     stdio: 'inherit',
+    env: { ...process.env, DATABASE_URL: 'file:./dev.db' },
   });
 });
 
