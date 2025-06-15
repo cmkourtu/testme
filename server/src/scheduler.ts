@@ -105,3 +105,7 @@ export async function selectNextItem(
 
   return { pool, itemId: pools[pool][0] };
 }
+
+export function _resetRngCacheForTests(): void {
+  rngCache.clear();
+}
