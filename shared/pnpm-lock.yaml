@@ -1,0 +1,37 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@prisma/client':
+        specifier: ^5.6.0
+        version: 5.22.0
+      ts-fsrs:
+        specifier: ^5.1.0
+        version: 5.1.0
+
+packages:
+
+  '@prisma/client@5.22.0':
+    resolution: {integrity: sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA==}
+    engines: {node: '>=16.13'}
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+
+  ts-fsrs@5.1.0:
+    resolution: {integrity: sha512-oVtMHcQOyjqVp8opZWzSwJ0nnYpvANi8MdPLF+2Hm1MPsbBV2FYXz4jBrrXTd6TR0ABWuvOqbyt3iGXtyZuYDg==}
+    engines: {node: '>=18.0.0'}
+
+snapshots:
+
+  '@prisma/client@5.22.0': {}
+
+  ts-fsrs@5.1.0: {}
