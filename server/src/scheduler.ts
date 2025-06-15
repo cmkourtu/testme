@@ -52,3 +52,56 @@ export async function getStretch(userId: number): Promise<number[]> {
   }
   return ids;
 }
+
+/**
+ * ε-greedy pool selector. Returns the item ID from the chosen pool.
+ * A deterministic PRNG keyed by userId ensures reproducible tests.
+ */
+import seedrandom from 'seedrandom';
+
+const rngCache = new Map<number, seedrandom.PRNG>();
+
+function rngFor(userId: number): seedrandom.PRNG {
+  let rng = rngCache.get(userId);
+  if (!rng) {
+    rng = seedrandom(String(userId));
+    rngCache.set(userId, rng);
+  }
+  return rng;
+}
+
+export async function selectNextItem(
+  userId: number,
+  weights = { due: 0.7, new: 0.2, stretch: 0.1 },
+): Promise<{ pool: 'due' | 'new' | 'stretch'; itemId: number | undefined }> {
+  const [due, unseen, stretch] = await Promise.all([
+    getDue(userId),
+    getFirstUnseen(userId),
+    getStretch(userId),
+  ]);
+
+  const pools = { due, new: unseen, stretch } as const;
+  const rng = rngFor(userId);
+  const total = weights.due + weights.new + weights.stretch;
+  const r = rng() * total;
+
+  let pool: 'due' | 'new' | 'stretch';
+  if (r < weights.due) {
+    pool = 'due';
+  } else if (r < weights.due + weights.new) {
+    pool = 'new';
+  } else {
+    pool = 'stretch';
+  }
+
+  if (!pools[pool].length) {
+    for (const p of ['due', 'new', 'stretch'] as const) {
+      if (pools[p].length) {
+        pool = p;
+        break;
+      }
+    }
+  }
+
+  return { pool, itemId: pools[pool][0] };
+}
