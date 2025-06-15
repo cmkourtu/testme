@@ -22,13 +22,13 @@ export async function getDue(userId: number): Promise<number[]> {
  * Earliest unseen item per objective.
  */
 export async function getFirstUnseen(userId: number): Promise<number[]> {
-  const items = await db.item.findMany({
+  const groups = await db.item.groupBy({
+    by: ['objectiveId'],
     where: { states: { none: { userId } } },
-    orderBy: { id: 'asc' },
-    distinct: ['objectiveId'],
-    select: { id: true },
+    _min: { id: true },
+    orderBy: { objectiveId: 'asc' },
   });
-  return items.map((i) => i.id);
+  return groups.map((g) => g._min.id!);
 }
 
 /**
