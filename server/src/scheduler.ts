@@ -57,7 +57,7 @@ export async function getStretch(userId: number): Promise<number[]> {
  * ε-greedy pool selector. Returns the item ID from the chosen pool.
  * A deterministic PRNG keyed by userId ensures reproducible tests.
  */
-import seedrandom from 'seedrandom';
+import * as seedrandom from 'seedrandom';
 
 const rngCache = new Map<number, seedrandom.PRNG>();
 
@@ -68,13 +68,6 @@ function rngFor(userId: number): seedrandom.PRNG {
     rngCache.set(userId, rng);
   }
   return rng;
-}
-
-/**
- * Test helper to clear cached PRNGs.
- */
-export function _resetRngCacheForTests(): void {
-  rngCache.clear();
 }
 
 export async function selectNextItem(
