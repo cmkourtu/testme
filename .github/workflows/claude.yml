@@ -40,7 +40,7 @@ jobs:
       - uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: 'claude-sonnet-4@20250514'   # <-- Sonnet snapshot
+          model: 'claude-sonnet-4@20250514' # <-- Sonnet snapshot
           trigger_phrase: '@claude'
           timeout_minutes: '60'
 
@@ -68,6 +68,6 @@ jobs:
       - uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: 'claude-opus-4@20250514'     # <-- Opus sn apshot
+          model: 'claude-opus-4@20250514' # <-- Opus sn apshot
           trigger_phrase: '@claudeopus'
           timeout_minutes: '60'
