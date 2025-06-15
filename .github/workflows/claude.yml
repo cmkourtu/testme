@@ -43,6 +43,13 @@ jobs:
           model: 'claude-sonnet-4-20250514' # <-- Sonnet snapshot
           trigger_phrase: '@claude'
           timeout_minutes: '60'
+          allowed_tools: |
+            Task,Bash,Glob,Grep,LS,Read,Edit,MultiEdit,Write,
+            mcp__github_file_ops__commit_files,
+            mcp__github_file_ops__delete_files,
+            mcp__github_file_ops__update_claude_comment
+
+
 
   # ----- Job 2 : Opus 4 -------------------------------------------------------
   claude-opus:
