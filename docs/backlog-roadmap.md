@@ -47,14 +47,14 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 
 ### 3 · Scheduler engine
 
-| ID  | Title                       | Description                                                            | AC                                                 |
-| --- | --------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------- |
-| 3-1 | Port FSRS algorithm         | Copy TypeScript FSRS-2024 into `/shared/fsrs.ts`.                      | Jest reproduces known easing table.                |
-| 3-2 | Candidate pool builder      | Function: `getDue()`, `getFirstUnseen()`, `getStretch()`.              | Jest: returns arrays per definition.               |
-| 3-3 | ε-greedy selector           | Implement 70/20/10 pick; deterministic seed for tests.                 | Coverage > 90 %.                                   |
-| 3-4 | Write item_state updater    | After each review adjust `ease`, `next_due`, `p_recall`.               | Values match FSRS reference CSV.                   |
-| 3-5 | Scheduler route integration | Wire `/session/next` to selector; middleware ensures cluster unlocked. | End-to-end test: 3 requests cycle due→new→stretch. |
-| 3-6 | Unit tests & load test      | 1 000 simulated reviews keep avg response < 50 ms.                     | npm script `pnpm test:scheduler` passes.           |
+| ID  | Title                                                    | Description                                                            | AC                                                 |
+| --- | -------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------- | --- |
+| 3-1 | Port FSRS algorithm                                      | Copy TypeScript FSRS-2024 into `/shared/fsrs.ts`.                      | Jest reproduces known easing table.                |
+| 3-2 | <span style="color: green">Candidate pool builder</span> | Function: `getDue()`, `getFirstUnseen()`, `getStretch()`.              | Jest: returns arrays per definition.               | ✅  |
+| 3-3 | ε-greedy selector                                        | Implement 70/20/10 pick; deterministic seed for tests.                 | Coverage > 90 %.                                   |
+| 3-4 | Write item_state updater                                 | After each review adjust `ease`, `next_due`, `p_recall`.               | Values match FSRS reference CSV.                   |
+| 3-5 | Scheduler route integration                              | Wire `/session/next` to selector; middleware ensures cluster unlocked. | End-to-end test: 3 requests cycle due→new→stretch. |
+| 3-6 | Unit tests & load test                                   | 1 000 simulated reviews keep avg response < 50 ms.                     | npm script `pnpm test:scheduler` passes.           |
 
 ### 4 · Gatekeeper service
 
