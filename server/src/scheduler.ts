@@ -64,7 +64,7 @@ const rngCache = new Map<number, seedrandom.PRNG>();
 function rngFor(userId: number): seedrandom.PRNG {
   let rng = rngCache.get(userId);
   if (!rng) {
-    rng = seedrandom(String(userId));
+    rng = (seedrandom as any)(String(userId));
     rngCache.set(userId, rng);
   }
   return rng;
