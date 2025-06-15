@@ -12,7 +12,6 @@ export async function getDue(userId: number): Promise<number[]> {
   const now = new Date();
   const items = await db.itemState.findMany({
     where: { userId, nextDue: { lte: now } },
-    orderBy: { nextDue: 'asc' },
     select: { itemId: true },
   });
   return items.map((i) => i.itemId);
@@ -44,7 +43,6 @@ export async function getStretch(userId: number): Promise<number[]> {
       userId,
       nextDue: { gte: start, lte: end },
     },
-    orderBy: { nextDue: 'asc' },
     select: { itemId: true },
   });
   const ids = items.map((i) => i.itemId);
