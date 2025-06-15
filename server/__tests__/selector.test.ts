@@ -24,7 +24,7 @@ beforeEach(() => {
 
 test('selectNextItem respects epsilon weights', async () => {
   // Mock getDue to return [1]
-  mockItemState.findMany.mockImplementation(async (args: any) => {
+  mockItemState.findMany.mockImplementation(async (args: Parameters<typeof db.itemState.findMany>[0]) => {
     if (args.where.nextDue) {
       return [{ itemId: 1 }];
     }
@@ -33,7 +33,7 @@ test('selectNextItem respects epsilon weights', async () => {
   });
 
   // Mock getFirstUnseen to return [2]
-  mockItem.groupBy.mockResolvedValue([{ _min: { id: 2 } }] as any);
+  mockItem.groupBy.mockResolvedValue([{ _min: { id: 2 } }] as Awaited<ReturnType<typeof db.item.groupBy>>);
 
   const counts = { due: 0, new: 0, stretch: 0 } as Record<string, number>;
   for (let i = 0; i < 1000; i++) {
