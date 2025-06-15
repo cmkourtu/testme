@@ -29,12 +29,17 @@ jobs:
         github.event.comment.body        ||
         github.event.review.body         ||
         github.event.issue.body, '@claudefix'
+      ) && !contains(
+        github.event.comment.body        ||
+        github.event.review.body         ||
+        github.event.issue.body, '@claudeopus'
       )
     runs-on: ubuntu-latest
     permissions:
       contents: read # fetch code
       pull-requests: write # leave review comments
       issues: write
+      id-token: write # required for OIDC authentication
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
@@ -57,12 +62,16 @@ jobs:
     if: contains(
       github.event.comment.body ||
       github.event.review.body  ||
-      github.event.issue.body, '@claudefix')
+      github.event.issue.body, '@claudefix') && !contains(
+      github.event.comment.body ||
+      github.event.review.body  ||
+      github.event.issue.body, '@claudeopusfix')
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # write access needed to commit files
       pull-requests: write
       issues: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
@@ -100,6 +109,7 @@ jobs:
       contents: read
       pull-requests: write
       issues: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
@@ -124,9 +134,10 @@ jobs:
       github.event.issue.body, '@claudeopusfix')
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # write access needed to commit files
       pull-requests: write
       issues: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
