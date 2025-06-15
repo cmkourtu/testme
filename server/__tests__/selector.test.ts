@@ -31,7 +31,7 @@ test('selectNextItem respects epsilon weights', async () => {
     // For getStretch
     return [{ itemId: 3 }];
   });
-  
+
   // Mock getFirstUnseen to return [2]
   mockItem.groupBy.mockResolvedValue([{ _min: { id: 2 } }] as any);
 
