@@ -49,8 +49,6 @@ jobs:
             mcp__github_file_ops__delete_files,
             mcp__github_file_ops__update_claude_comment
 
-
-
   # ----- Job 2 : Opus 4 -------------------------------------------------------
   claude-opus:
     if: |
