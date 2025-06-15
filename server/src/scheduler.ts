@@ -70,6 +70,13 @@ function rngFor(userId: number): seedrandom.PRNG {
   return rng;
 }
 
+/**
+ * Test helper to clear cached PRNGs.
+ */
+export function _resetRngCacheForTests(): void {
+  rngCache.clear();
+}
+
 export async function selectNextItem(
   userId: number,
   weights = { due: 0.7, new: 0.2, stretch: 0.1 },

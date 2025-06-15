@@ -1,5 +1,3 @@
-import { selectNextItem, getDue, getFirstUnseen, getStretch } from '../src/scheduler';
-
 jest.mock('../src/scheduler', () => {
   const actual = jest.requireActual('../src/scheduler');
   return {
@@ -10,9 +8,24 @@ jest.mock('../src/scheduler', () => {
   };
 });
 
-const mockDue = getDue as jest.Mock;
-const mockNew = getFirstUnseen as jest.Mock;
-const mockStretch = getStretch as jest.Mock;
+import {
+  selectNextItem,
+  getDue,
+  getFirstUnseen,
+  getStretch,
+  _resetRngCacheForTests,
+} from '../src/scheduler';
+
+const mockDue = getDue as jest.MockedFunction<typeof getDue>;
+const mockNew = getFirstUnseen as jest.MockedFunction<typeof getFirstUnseen>;
+const mockStretch = getStretch as jest.MockedFunction<typeof getStretch>;
+
+beforeEach(() => {
+  mockDue.mockReset();
+  mockNew.mockReset();
+  mockStretch.mockReset();
+  _resetRngCacheForTests();
+});
 
 test('selectNextItem respects epsilon weights', async () => {
   mockDue.mockResolvedValue([1]);
