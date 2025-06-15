@@ -1,38 +1,40 @@
 # .github/workflows/claude.yml
 name: Claude PR Assistant
 
+################################################################################
+# EVENTS
+################################################################################
 on:
-  issue_comment:
+  issue_comment: # Comments on PRs / issues
     types: [created]
-  pull_request_review_comment:
+  pull_request_review_comment: # Thread-level review comments
     types: [created]
-  issues:
-    types: [opened, assigned]
-  pull_request_review:
+  pull_request_review: # “Submit review…” body text
     types: [submitted]
+  issues: # Issue bodies / assignments
+    types: [opened, assigned]
 
+################################################################################
+# 1)  SONNET 4  –  REVIEW-ONLY
+################################################################################
 jobs:
-  # ----- Job 1 : Sonnet 4 ----------------------------------------------------
-  claude-sonnet:
+  claude-sonnet-review:
+    name: Claude Review (Sonnet 4)
     if: |
-      (github.event_name == 'issue_comment' &&
-       contains(github.event.comment.body, '@claude') &&
-       !contains(github.event.comment.body, '@claudeopus')) ||
-      (github.event_name == 'pull_request_review_comment' &&
-       contains(github.event.comment.body, '@claude') &&
-       !contains(github.event.comment.body, '@claudeopus')) ||
-      (github.event_name == 'pull_request_review' &&
-       contains(github.event.review.body, '@claude') &&
-       !contains(github.event.review.body, '@claudeopus')) ||
-      (github.event_name == 'issues' &&
-       contains(github.event.issue.body, '@claude') &&
-       !contains(github.event.issue.body, '@claudeopus'))
+      contains(
+        github.event.comment?.body        ||
+        github.event.review?.body         ||
+        github.event.issue?.body, '@claude'
+      ) && !contains(
+        github.event.comment?.body        ||
+        github.event.review?.body         ||
+        github.event.issue?.body, '@claudefix'
+      )
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read # fetch code
+      pull-requests: write # leave review comments
       issues: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
@@ -40,32 +42,64 @@ jobs:
       - uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: 'claude-sonnet-4-20250514' # <-- Sonnet snapshot
           trigger_phrase: '@claude'
+          model: 'claude-sonnet-4-20250514'
           timeout_minutes: '60'
+          # ⛔ no write tools → suggestions only
+          allowed_tools: 'Read,LS,Glob,Grep,Edit,mcp__github_file_ops__update_claude_comment'
+          disallowed_tools: 'mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files'
+
+  ################################################################################
+  # 2)  SONNET 4  –  AUTO-FIX
+  ################################################################################
+  claude-sonnet-fix:
+    name: Claude Fix (Sonnet 4)
+    if: contains(
+      github.event.comment?.body ||
+      github.event.review?.body  ||
+      github.event.issue?.body, '@claudefix')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: '@claudefix'
+          model: 'claude-sonnet-4-20250514'
+          timeout_minutes: '60'
+          # 🛠  full toolbelt incl. Bash & commit
           allowed_tools: |
             Task,Bash,Glob,Grep,LS,Read,Edit,MultiEdit,Write,
             mcp__github_file_ops__commit_files,
             mcp__github_file_ops__delete_files,
             mcp__github_file_ops__update_claude_comment
 
-  # ----- Job 2 : Opus 4 -------------------------------------------------------
-  claude-opus:
+  ################################################################################
+  # 3)  OPUS 4  –  REVIEW-ONLY
+  ################################################################################
+  claude-opus-review:
+    name: Claude Review (Opus 4)
     if: |
-      (github.event_name == 'issue_comment' &&
-       contains(github.event.comment.body, '@claudeopus')) ||
-      (github.event_name == 'pull_request_review_comment' &&
-       contains(github.event.comment.body, '@claudeopus')) ||
-      (github.event_name == 'pull_request_review' &&
-       contains(github.event.review.body, '@claudeopus')) ||
-      (github.event_name == 'issues' &&
-       contains(github.event.issue.body, '@claudeopus'))
+      contains(
+        github.event.comment?.body        ||
+        github.event.review?.body         ||
+        github.event.issue?.body, '@claudeopus'
+      ) && !contains(
+        github.event.comment?.body        ||
+        github.event.review?.body         ||
+        github.event.issue?.body, '@claudeopusfix'
+      )
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       issues: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 1 }
@@ -73,6 +107,38 @@ jobs:
       - uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: 'claude-opus-4-20250514' # <-- Opus snapshot
           trigger_phrase: '@claudeopus'
+          model: 'claude-opus-4-20250514' # dashed ID for direct API
           timeout_minutes: '60'
+          allowed_tools: 'Read,LS,Glob,Grep,Edit,mcp__github_file_ops__update_claude_comment'
+          disallowed_tools: 'mcp__github_file_ops__commit_files,mcp__github_file_ops__delete_files'
+
+  ################################################################################
+  # 4)  OPUS 4  –  AUTO-FIX
+  ################################################################################
+  claude-opus-fix:
+    name: Claude Fix (Opus 4)
+    if: contains(
+      github.event.comment?.body ||
+      github.event.review?.body  ||
+      github.event.issue?.body, '@claudeopusfix')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: '@claudeopusfix'
+          model: 'claude-opus-4-20250514'
+          timeout_minutes: '60'
+          allowed_tools: |
+            Task,Bash,Glob,Grep,LS,Read,Edit,MultiEdit,Write,
+            mcp__github_file_ops__commit_files,
+            mcp__github_file_ops__delete_files,
+            mcp__github_file_ops__update_claude_comment
