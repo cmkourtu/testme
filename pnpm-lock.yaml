@@ -156,6 +156,9 @@ importers:
       '@prisma/client':
         specifier: ^5.6.0
         version: 5.22.0(prisma@5.22.0)
+      ts-fsrs:
+        specifier: ^5.1.0
+        version: 5.1.0
 
 packages:
 
@@ -3087,6 +3090,10 @@ packages:
     engines: {node: '>=18.12'}
     peerDependencies:
       typescript: '>=4.8.4'
+
+  ts-fsrs@5.1.0:
+    resolution: {integrity: sha512-oVtMHcQOyjqVp8opZWzSwJ0nnYpvANi8MdPLF+2Hm1MPsbBV2FYXz4jBrrXTd6TR0ABWuvOqbyt3iGXtyZuYDg==}
+    engines: {node: '>=18.0.0'}
 
   ts-jest@29.3.4:
     resolution: {integrity: sha512-Iqbrm8IXOmV+ggWHOTEbjwyCf2xZlUMv5npExksXohL+tk8va4Fjhb+X2+Rt9NBmgO7bJ8WpnMLOwih/DnMlFA==}
@@ -6590,6 +6597,8 @@ snapshots:
   ts-api-utils@2.1.0(typescript@5.8.3):
     dependencies:
       typescript: 5.8.3
+
+  ts-fsrs@5.1.0: {}
 
   ts-jest@29.3.4(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest@29.7.0(@types/node@22.15.29)(ts-node@10.9.2(@types/node@22.15.29)(typescript@5.8.3)))(typescript@5.8.3):
     dependencies:
