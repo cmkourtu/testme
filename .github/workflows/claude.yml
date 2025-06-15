@@ -1,3 +1,4 @@
+# .github/workflows/claude.yml
 name: Claude PR Assistant
 
 on:
@@ -11,12 +12,21 @@ on:
     types: [submitted]
 
 jobs:
-  claude-code-action:
+  # ----- Job 1 : Sonnet 4 ----------------------------------------------------
+  claude-sonnet:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+      (github.event_name == 'issue_comment' &&
+       contains(github.event.comment.body, '@claude') &&
+       !contains(github.event.comment.body, '@claudeopus')) ||
+      (github.event_name == 'pull_request_review_comment' &&
+       contains(github.event.comment.body, '@claude') &&
+       !contains(github.event.comment.body, '@claudeopus')) ||
+      (github.event_name == 'pull_request_review' &&
+       contains(github.event.review.body, '@claude') &&
+       !contains(github.event.review.body, '@claudeopus')) ||
+      (github.event_name == 'issues' &&
+       contains(github.event.issue.body, '@claude') &&
+       !contains(github.event.issue.body, '@claudeopus'))
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,13 +34,40 @@ jobs:
       issues: read
       id-token: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
 
-      - name: Run Claude PR Action
-        uses: anthropics/claude-code-action@beta
+      - uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: 'claude-sonnet-4@20250514'   # <-- Sonnet snapshot
+          trigger_phrase: '@claude'
+          timeout_minutes: '60'
+
+  # ----- Job 2 : Opus 4 -------------------------------------------------------
+  claude-opus:
+    if: |
+      (github.event_name == 'issue_comment' &&
+       contains(github.event.comment.body, '@claudeopus')) ||
+      (github.event_name == 'pull_request_review_comment' &&
+       contains(github.event.comment.body, '@claudeopus')) ||
+      (github.event_name == 'pull_request_review' &&
+       contains(github.event.review.body, '@claudeopus')) ||
+      (github.event_name == 'issues' &&
+       contains(github.event.issue.body, '@claudeopus'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: 'claude-opus-4@20250514'     # <-- Opus snapshot
+          trigger_phrase: '@claudeopus'
           timeout_minutes: '60'
