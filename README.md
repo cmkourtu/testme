@@ -96,6 +96,7 @@ shared package.
 - **Practice View** – Simple learner interface that submits free responses and
   loads the next item.
 - **Anonymous Auth** – Client assigns a UUID on first load and sends it as `X-User` for all API requests.
+- **Session Next** – `GET /api/session/next` returns the next item with pool and recall metadata.
 - **Dependency Graph** – `POST /api/graph/generate` builds a cluster graph from
   a list of objectives. All objective fields (`id`, `text`, `bloom`, `cluster`)
   must be non-empty strings.
