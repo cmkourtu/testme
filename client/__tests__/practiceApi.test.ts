@@ -1,5 +1,5 @@
 /** @jest-environment jsdom */
-import { generatePracticeItem, gradePracticeAnswer } from '../src/api';
+import { generatePracticeItem, gradePracticeAnswer, fetchNextItem } from '../src/api';
 import { initAnonUser } from '../src/auth';
 
 beforeEach(() => {
@@ -27,4 +27,20 @@ test('gradePracticeAnswer posts answer', async () => {
   expect(call[0]).toBe('/api/practice/grade');
   const opts = call[1];
   expect(opts.method).toBe('POST');
+});
+
+test('fetchNextItem returns item', async () => {
+  initAnonUser();
+  (global.fetch as jest.Mock).mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({
+      item: { id: 1, stem: 'Q' },
+      meta: { pool: 'due', p_recall: 0.9 },
+    }),
+  });
+  const data = await fetchNextItem();
+  const call = (global.fetch as jest.Mock).mock.calls[0];
+  expect(call[0]).toBe('/api/session/next');
+  expect(data.item.id).toBe(1);
+  expect(data.meta.pool).toBe('due');
 });

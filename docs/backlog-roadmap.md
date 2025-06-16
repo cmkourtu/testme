@@ -42,7 +42,7 @@ The backlog is organized by feature area. Each ticket has an ID used for referen
 | 2-3 | <span style="color: green">Text chunker service</span>      | Split text into chunks ≤ **CHUNK_SIZE** (default 30k chars).                                 | Jest: sample text returns array of chunks. | ✅     |
 | 2-4 | <span style="color: green">Objective extractor route</span> | `POST /api/objectives/extract` → DeepSeek call; returns JSON list.                           | For sample text returns ≥5 objectives.     | ✅     |
 | 2-5 | CRUD objective/item                                         | REST routes `/objectives`, `/items` (GET/PUT/DELETE) for admin UI.                           | Swagger doc passes.                        | ✅     |
-| 2-6 | Session "next" route                                        | `/api/session/next` → scheduler pick logic.                                                  | Unit test returns item with correct tier.  |        |
+| 2-6 | Session "next" route                                        | `/api/session/next` → scheduler pick logic.                                                  | Unit test returns item with correct tier.  | ✅     |
 | 2-7 | Answer grading route                                        | `/api/session/:itemId/answer` posts user text → ensemble DeepSeek grader, writes reviews.    | Correct answer returns verdict correct.    |        |
 
 ### 3 · Scheduler engine

@@ -14,6 +14,10 @@ export async function apiFetch(
 
 export async function fetchNextItem() {
   const res = await apiFetch('/api/session/next');
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'server_error');
+  }
   return res.json();
 }
 

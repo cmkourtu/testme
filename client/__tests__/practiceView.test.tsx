@@ -9,7 +9,10 @@ const mockNext = api.fetchNextItem as jest.Mock;
 const mockSubmit = api.submitAnswer as jest.Mock;
 
 beforeEach(() => {
-  mockNext.mockResolvedValue({ id: 1, stem: 'Q1' });
+  mockNext.mockResolvedValue({
+    item: { id: 1, stem: 'Q1' },
+    meta: { pool: 'due', p_recall: 0.9 },
+  });
   mockSubmit.mockResolvedValue({ verdict: 'correct', feedback: 'good' });
 });
 

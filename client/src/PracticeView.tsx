@@ -13,7 +13,7 @@ export function PracticeView() {
 
   const loadItem = async () => {
     const res = await fetchNextItem();
-    setItem(res);
+    setItem(res.item);
     setAnswer('');
   };
 
