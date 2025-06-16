@@ -1,5 +1,8 @@
 import express from 'express';
 import { generateItem } from './llm/itemGenerator';
+import { auth, AuthRequest } from './auth';
+import { selectNextItem } from './scheduler';
+import { db } from '../../shared/db';
 
 // Session routes for learner flow.
 // The manual-question endpoint bypasses the Scheduler and directly
@@ -31,5 +34,37 @@ sessionRouter.post('/manual-question', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'llm_error' });
+  }
+});
+
+// Returns the next item for the authenticated user using Scheduler logic.
+sessionRouter.get('/next', auth, async (req: AuthRequest, res) => {
+  try {
+    const user = req.user!;
+    const { pool, itemId } = await selectNextItem(user.id);
+    let item = null;
+    let pRecall = 0;
+
+    if (itemId) {
+      // Fetch item details
+      item = await db.item.findUnique({ where: { id: itemId } });
+
+      // Item might have been deleted or not found
+      if (!item) {
+        console.error(`Item with id ${itemId} not found`);
+        return res.json({ item: null, meta: { pool, p_recall: 0 } });
+      }
+
+      // Fetch item state for the user
+      const state = await db.itemState.findUnique({
+        where: { userId_itemId: { userId: user.id, itemId } },
+      });
+      pRecall = state?.p_recall ?? 0;
+    }
+
+    res.json({ item, meta: { pool, p_recall: pRecall } });
+  } catch (error) {
+    console.error('Error in /next endpoint:', error);
+    res.status(500).json({ error: 'internal_server_error' });
   }
 });
