@@ -179,7 +179,7 @@ test('only some pools have items - fallback behavior', async () => {
       },
     });
   }
-  
+
   // Update item 1 to be due
   await db.itemState.update({
     where: { userId_itemId: { userId: 64, itemId: 1 } },
@@ -244,7 +244,7 @@ test('multiple practice cycles maintain consistency', async () => {
     await db.item.deleteMany({});
     await db.objective.deleteMany({});
     await db.user.deleteMany({});
-    
+
     // Re-seed for each cycle
     await seed();
     _resetRngCacheForTests(); // Reset RNG for consistent results
